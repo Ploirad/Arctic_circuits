@@ -154,10 +154,24 @@ Aquí empieza la magia: RaspberryJamMod es el mod que conecta Minecraft con Pyth
 - Crear minijuegos o trampas.
 - Automatizar tareas como un auténtico ingeniero de Redstone.
 
+### Instala Python
+1. Vete a [Python.org](https://www.python.org/ftp/python/3.11.6/python-3.11.6-amd64.exe) e instala python.
+2. **marca la casilla “Add Python to PATH”** durante la instalación:
+<img width="646" height="397" alt="image" src="https://github.com/user-attachments/assets/e6ede275-25b7-495a-8ba6-7184d0e2b5dc" />
+3. Termina de instalar python en tu ordenador.
+
 ### Instalación
 
 1. Ve a [RaspberryJamMod Releases en GitHub](https://github.com/arpruss/raspberryjammod/releases)
-2. Descarga la versión más reciente compatible con **Minecraft 1.12.2** (`.jar`).
+2. Ve a la versión 0.94 y descarga el fichero **RaspberryJamMod-Installer.exe**
+3. Asegúrate de que tienes las opciones como en la foto <img width="493" height="380" alt="image" src="https://github.com/user-attachments/assets/9b976412-5afc-43eb-9e90-0a85e512cba0" />
+4. Cuando hayas finalizado la ejecución totalmente, te habrá creado el fichero "RaspberryJamMod.jar" en la carpeta %appdata%\.minecraft\mods
+
+#### Comprueba que existe el mod de minecraft en su sitio
+
+1. Pulsa `Windows + R` → escribe `%appdata%` y Enter.
+2. Abre la carpeta `.minecraft` → entra en `mods` (debería existir la carpeta, si hiciste el paso anterior bien)
+3. Comprueba que existe RaspberryJamMod.jar
 
 #### Instala la librería de Python
 
@@ -165,19 +179,14 @@ Abre el símbolo del sistema (`cmd`) y escribe:
 ```
 pip install raspberryjammod
 ```
-Si da error con `pip`, instala Python desde [python.org](https://www.python.org/downloads/) y **marca la casilla “Add Python to PATH”** durante la instalación.
 
-#### Coloca el mod en Minecraft
-
-1. Pulsa `Windows + R` → escribe `%appdata%` y Enter.
-2. Abre la carpeta `.minecraft` → entra en `mods` (si no existe, créala).
-3. Copia dentro el `.jar` de RaspberryJamMod.
 
 #### Comprueba que funciona
 
 1. Abre Minecraft con el perfil Forge 1.12.2.
 2. En el menú principal, entra en **Mods**.
 3. Si ves “RaspberryJamMod” en la lista, ¡todo listo! 🎉
+<img width="847" height="505" alt="image" src="https://github.com/user-attachments/assets/109feaca-41c5-4019-a63d-172273d73b1f" />
 
 ---
 
@@ -190,46 +199,130 @@ Porque así tú y tus amigos podréis compartir mundo, jugar juntos y ejecutar s
 #### 1️⃣ Descarga el servidor Forge
 
 1. Desde la [misma página de Forge](https://files.minecraftforge.net/net/minecraftforge/forge/index_1.12.2.html), descarga de nuevo el **Installer**.
-2. Crea una carpeta llamada, por ejemplo, `C:\MinecraftServer`.
+2. Pulsa windows + R y escribe %UserProfile%\Documents
+3. Se abrirá la carpeta de mis documentos del usuario actual. Crea una carpeta que se llame "ServerMinecraft" y descarga ahí el installer de Forge
 
 #### 2️⃣ Instálalo
 
-1. Copia el `.jar` del instalador en esa carpeta.
-2. Ejecútalo y selecciona **Install server**.
+1. Accede a la carpeta donde descargaste Forge (%UserProfile%\Documents\ServerMinecraft)
+2. Ejecuta el instalador y selecciona **Install server**, con las opciones que te muestro en la foto, eligiendo la carpeta %UserProfile%\Documents\ServerMinecraft :
+<img width="385" height="307" alt="image" src="https://github.com/user-attachments/assets/83af65cb-596d-4807-a40d-230b20b81c60" />
 3. Espera a que se generen los archivos.
+4. Verás todos estos ficheros:
+<img width="1159" height="689" alt="image" src="https://github.com/user-attachments/assets/67d44c00-b2db-4c8e-b8b4-4b9ff9ebce58" />
+5. Haz doble click en el que pone minecraft_server.1.12.2.jar y se te crearán todos estos ficheros:
+<img width="1153" height="687" alt="image" src="https://github.com/user-attachments/assets/cada32cd-5168-4eb6-a0d6-438fb8323ce6" />
 
 #### 3️⃣ Acepta la EULA
 
 1. Abre el archivo `eula.txt`.
 2. Cambia `eula=false` por `eula=true`.
 3. Guarda y cierra.
+4. Vuelve a ejecutar el fichero minecraft_server.1.12.2.jar y se te abrirá la siguiente pantalla con el servidor:
+<img width="1067" height="573" alt="image" src="https://github.com/user-attachments/assets/e908fdc9-9e02-4443-a10f-8c6276cad14e" />
+5. Te saldrá una ventana que te dirá si quieres permitir que se hagan cambios. Dile que permitir.
+6. 
 
 #### 4️⃣ Añade el mod al servidor
 
-1. En la carpeta del servidor, abre `mods`.
-2. Copia el `.jar` de RaspberryJamMod.
+1. En la carpeta del servidor, crea una carpeta `mods`.
+2. Descarga el fichero [RaspberryJamMod](https://github.com/blockpush25/SNOW-DRIFTERS/blob/main/minecraft_challenge/RaspberryJamMod.jar) en la carpeta mods que acabas de crear
+3. Abre visual studio code, y selecciona archivo -> nueva ventana
+4. selecciona el botón azul "abrir carpeta" y elige, dentro de documentos, la carpeta que creaste "ServerMinecraft"
 
-#### 5️⃣ Crea el archivo para arrancar el servidor
+#### 5️⃣ Configura las propiedades
 
-1. Crea un nuevo archivo de texto y renómbralo a `start_server.bat`.
-2. Ábrelo con el Bloc de notas y pega esto:
-   ```batch
-   java -Xmx2G -Xms2G -jar forge-1.12.2-14.23.5.XXXX-universal.jar nogui
-   pause
-   ```
-3. Guarda y ciérralo.
-4. Haz doble clic para arrancar el servidor.
-
-#### 6️⃣ Configura las propiedades
-
-Abre `server.properties` y cambia, por ejemplo:
+Abre `server.properties` (desde visual studio code) y cambia:
 ```
 gamemode=creative
 difficulty=peaceful
 pvp=false
-max-players=20
+online-mode=false
 ```
-Guarda y cierra.
+Guarda y cierra. (desde visual studio, lo puedes hacer con control + s para ir rápido)
+
+#### 6️⃣ Crea el archivo para arrancar el servidor
+
+1. Crea un nuevo archivo de texto y renómbralo a `start_server.bat`. Para hacer eso en visual studio, haz click derecho en el explorador de archivos (parte izquierda de la ventana) y selecciona nuevo archivo. en el cuadro de texto, pon "start_server.bat"
+3. Ábrelo y pega esto:
+
+
+```batch
+@echo off
+setlocal EnableDelayedExpansion
+
+echo ============================================
+echo Minecraft Forge 1.12.2 Server
+echo ============================================
+echo.
+
+REM Check if Java 8 portable exists, if not download it
+if not exist "java8\bin\java.exe" (
+    echo Java 8 portable not found. Downloading...
+    echo.
+
+    if not exist "java8" mkdir java8
+
+    echo Downloading Java 8 from Adoptium...
+    echo Please wait, this may take several minutes...
+    powershell -Command "$ProgressPreference = 'SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u432-b06/OpenJDK8U-jdk_x64_windows_hotspot_8u432b06.zip' -OutFile 'java8.zip'"
+
+    if not exist "java8.zip" (
+        echo ERROR: Download failed! Please check your internet connection.
+        pause
+        exit /b 1
+    )
+
+    echo.
+    echo Extracting Java 8...
+    powershell -Command "Expand-Archive -Path 'java8.zip' -DestinationPath '.' -Force"
+
+    REM Move files from extracted folder to java8
+    for /d %%i in (jdk8u432-b06) do (
+        xcopy "%%i" "java8\" /E /I /H /Y >nul
+        rmdir "%%i" /S /Q
+    )
+
+    del java8.zip
+
+    echo.
+    echo Java 8 downloaded and extracted successfully!
+    echo.
+)
+
+REM Show Java version
+echo Using portable Java 8:
+java8\bin\java.exe -version
+echo.
+
+REM Accept EULA check
+if not exist "eula.txt" (
+    echo EULA not found. Creating eula.txt...
+    echo #By changing the setting below to TRUE you are indicating your agreement to our EULA https://account.mojang.com/documents/minecraft_eula> eula.txt
+    echo eula=false>> eula.txt
+    echo.
+    echo Please edit eula.txt and change eula=false to eula=true
+    echo Then run this script again.
+    pause
+    exit /b 1
+)
+
+echo Starting Minecraft Server with 2GB RAM...
+echo.
+
+REM Start server with Java 8
+java8\bin\java.exe -Xmx2G -Xms2G -jar forge-1.12.2-14.23.5.2860.jar nogui
+
+echo.
+echo Server stopped.
+pause
+
+   ```
+4. Guarda y ciérralo. (recuerda: control + s)
+5. Haz click derecho en el explorador de visual studio y selecciona "abrir terminal integrado". Se te verá de esta manera:
+<img width="1454" height="795" alt="image" src="https://github.com/user-attachments/assets/d265bb19-66c0-4ca0-887b-beb105c75ecb" />
+   
+6. escribe .\start_server.bat para ejecutar el servidor
 
 ---
 
@@ -281,7 +374,7 @@ Haz copias de seguridad antes de hacer locuras con Python:
 
 Llega el momento que estabas esperando: ¡programar en Minecraft!
 
-1. Crea una carpeta para tus scripts, por ejemplo `C:\MinecraftPython`.
+1. Con el servidor arrancado, crea una carpeta para tus scripts donde tengas el servidor, por ejemplo `scripts`.
 2. Dentro, crea un archivo `torre.py` y pega este código:
 
 ```python
@@ -298,7 +391,7 @@ for i in range(10):
 mc.postToChat("¡Torre de diamante construida!")
 ```
 
-3. Ejecuta el script desde la consola con:
+3. ¡Importante! tienes que tener el servidor arrancado, y al menos una jugador dentro del juego para que funcione! Después ejecuta el script desde la consola con:
 ```
 python torre.py
 ```
