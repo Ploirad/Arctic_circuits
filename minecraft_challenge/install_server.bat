@@ -294,21 +294,45 @@ echo.
 
 if not exist "%SERVER_DIR%\mods" mkdir "%SERVER_DIR%\mods"
 
-if not exist "%SERVER_DIR%\mods\RaspberryJamMod.jar" (
-    echo Descargando RaspberryJamMod.jar...
-    echo.
-    
-    powershell -Command "$ProgressPreference = 'SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Write-Host 'Descargando desde GitHub...'; Invoke-WebRequest -Uri 'https://github.com/arpruss/raspberryjammod/releases/download/0.94/RaspberryJamMod.jar' -OutFile '%SERVER_DIR%\mods\RaspberryJamMod.jar' -UseBasicParsing"
-    
+REM Intentar copiar RaspberryJamMod.jar desde el repositorio
+set "REPO_MOD=%~dp0RaspberryJamMod.jar"
+
+if exist "%REPO_MOD%" (
+    echo Copiando RaspberryJamMod.jar desde el repositorio...
+    copy "%REPO_MOD%" "%SERVER_DIR%\mods\RaspberryJamMod.jar" >nul 2>&1
     if exist "%SERVER_DIR%\mods\RaspberryJamMod.jar" (
-        echo ✓ RaspberryJamMod descargado
+        echo ✓ RaspberryJamMod copiado desde el repositorio
     ) else (
-        echo ❌ ERROR: No se pudo descargar RaspberryJamMod
-        echo Intenta descargarlo manualmente desde:
-        echo https://github.com/arpruss/raspberryjammod/releases
+        echo ❌ ERROR: No se pudo copiar RaspberryJamMod
+        pause
+        exit /b 1
     )
 ) else (
-    echo ✓ RaspberryJamMod ya está instalado
+    REM Si no está en el repositorio, intentar descargarlo
+    if not exist "%SERVER_DIR%\mods\RaspberryJamMod.jar" (
+        echo RaspberryJamMod.jar no encontrado en el repositorio.
+        echo Descargando desde GitHub...
+        echo.
+        
+        powershell -Command "$ProgressPreference = 'SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Write-Host 'Descargando...'; Invoke-WebRequest -Uri 'https://github.com/arpruss/raspberryjammod/releases/download/0.94/RaspberryJamMod.jar' -OutFile '%SERVER_DIR%\mods\RaspberryJamMod.jar' -UseBasicParsing"
+        
+        if exist "%SERVER_DIR%\mods\RaspberryJamMod.jar" (
+            echo ✓ RaspberryJamMod descargado desde GitHub
+        ) else (
+            echo ❌ ERROR CRÍTICO: No se pudo obtener RaspberryJamMod
+            echo.
+            echo El mod es esencial para que Python funcione con Minecraft.
+            echo.
+            echo SOLUCIÓN MANUAL:
+            echo 1. Descarga desde: https://github.com/arpruss/raspberryjammod/releases/download/0.94/RaspberryJamMod.jar
+            echo 2. Guárdalo en: %SERVER_DIR%\mods\
+            echo.
+            pause
+            exit /b 1
+        )
+    ) else (
+        echo ✓ RaspberryJamMod ya está instalado
+    )
 )
 
 REM También copiar a la carpeta de cliente para SKLauncher
@@ -337,8 +361,8 @@ REM Crear server.properties con configuración optimizada
 echo #Minecraft server properties> server.properties
 echo #Generado automáticamente por el instalador>> server.properties
 echo server-port=25565>> server.properties
-echo gamemode=creative>> server.properties
-echo difficulty=peaceful>> server.properties
+echo gamemode=1>> server.properties
+echo difficulty=0>> server.properties
 echo spawn-protection=0>> server.properties
 echo max-players=20>> server.properties
 echo online-mode=false>> server.properties
@@ -348,6 +372,10 @@ echo level-name=world>> server.properties
 echo motd=§aServidor Minecraft + Python - Academia Cervantes>> server.properties
 echo allow-flight=true>> server.properties
 echo max-world-size=29999984>> server.properties
+echo force-gamemode=false>> server.properties
+echo spawn-animals=true>> server.properties
+echo spawn-monsters=false>> server.properties
+echo spawn-npcs=true>> server.properties
 
 echo ✓ server.properties configurado
 
@@ -435,15 +463,33 @@ REM Crear script de ejemplo 1: Torre de diamantes
 (
 echo from mcpi.minecraft import Minecraft
 echo from mcpi import block
+echo import time
 echo.
-echo mc = Minecraft.create^(^)
+echo print^("Conectando a Minecraft..."^)
+echo try:
+echo     mc = Minecraft.create^(^)
+echo     print^("✓ Conectado correctamente"^)
+echo except ConnectionRefusedError:
+echo     print^("❌ ERROR: No se puede conectar al servidor"^)
+echo     print^("   Verifica que:"^)
+echo     print^("   1. El servidor está arrancado"^)
+echo     print^("   2. Estás dentro del juego ^(conectado^)"^)
+echo     print^("   3. RaspberryJamMod está instalado ^(ver menú Mods^)"^)
+echo     input^("Pulsa Enter para salir..."^)
+echo     exit^(^)
+echo.
 echo mc.postToChat^("¡Hola desde Python!"^)
 echo.
 echo pos = mc.player.getPos^(^)
+echo print^(f"Tu posición: X={int^(pos.x^)}, Y={int^(pos.y^)}, Z={int^(pos.z^)}"^)
+echo.
+echo mc.postToChat^("Construyendo torre..."^)
 echo for i in range^(10^):
 echo     mc.setBlock^(pos.x + 3, pos.y + i, pos.z, block.DIAMOND_BLOCK.id^)
+echo     time.sleep^(0.1^)
 echo.
 echo mc.postToChat^("¡Torre de diamante construida!"^)
+echo print^("✓ Torre construida correctamente"^)
 ) > "%SERVER_DIR%\scripts\torre.py"
 
 REM Crear script de ejemplo 2: Cubo de colores
@@ -487,6 +533,12 @@ echo mc.postToChat^("¡Mira qué altura!"^)
 ) > "%SERVER_DIR%\scripts\teletransporte.py"
 
 echo ✓ Scripts de ejemplo creados
+
+REM Copiar script de diagnóstico
+if exist "%~dp0test_conexion.py" (
+    copy "%~dp0test_conexion.py" "%SERVER_DIR%\scripts\" >nul 2>&1
+    echo ✓ Script de diagnóstico copiado
+)
 
 REM ============================================
 REM Crear guía rápida
@@ -546,12 +598,19 @@ echo    • Ejecuta: python torre.py
 echo    • ¡Verás una torre de diamantes aparecer!
 echo.
 echo ═══════════════════════════════════════════════════════════════
-echo SCRIPTS DE EJEMPLO INCLUIDOS:
+echo SCRIPTS INCLUIDOS:
 echo ═══════════════════════════════════════════════════════════════
 echo.
+echo DIAGNÓSTICO:
+echo • test_conexion.py - Verifica que Python conecta con Minecraft
+echo.
+echo EJEMPLOS:
 echo • torre.py - Crea una torre de diamantes
 echo • cubo_colores.py - Genera un cubo arcoíris
 echo • teletransporte.py - Te teletransporta hacia arriba
+echo.
+echo ⚠️  SI LOS SCRIPTS NO FUNCIONAN: Ejecuta primero test_conexion.py
+echo    para diagnosticar el problema
 echo.
 echo ═══════════════════════════════════════════════════════════════
 echo UBICACIONES IMPORTANTES:
