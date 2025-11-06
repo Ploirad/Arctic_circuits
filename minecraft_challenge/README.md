@@ -34,6 +34,9 @@ Al acabar, podréis invocar bloques de diamante, levantar ciudades enteras con u
 
 ---
 
+Servidor de minecraft previamente instalado:
+[Servidor](https://drive.google.com/file/d/1I6sjkui0SJT8m-ezKBqCxMQtjKOafKnx/view?usp=sharing)
+
 ## 🚀 Paso 1: Instalando SKLauncher
 
 ### ¿Por qué SKLauncher?
