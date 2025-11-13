@@ -1,0 +1,17 @@
+{
+  "fecha": "2025-01-13T12:00:00.000Z",
+  "progreso": {
+    "t1": "completed",
+    "t1_assignee": "member1",
+    "t2": "in-progress",
+    "t2_assignee": "member2",
+    "t5": "pending",
+    "t5_assignee": "member3"
+  },
+  "estadisticas": {
+    "total": "32",
+    "completadas": "1",
+    "enProgreso": "1",
+    "puntos": "200"
+  }
+}
