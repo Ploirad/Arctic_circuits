@@ -1,0 +1,7 @@
+# Ignorar backups exportados localmente (solo commitear progreso.json oficial)
+eurobot2026_progreso_*.json
+
+# Ignorar archivos temporales del sistema
+.DS_Store
+Thumbs.db
+*~

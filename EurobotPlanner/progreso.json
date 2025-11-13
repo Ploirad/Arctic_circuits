@@ -1,0 +1,14 @@
+{
+  "fecha": "2025-01-13T00:00:00.000Z",
+  "progreso": {},
+  "estadisticas": {
+    "total": "32",
+    "completadas": "0",
+    "enProgreso": "0",
+    "puntos": "200"
+  },
+  "version": "1.0",
+  "equipo": "Academia Cervantes Robótica",
+  "proyecto": "Eurobot 2026 - Winter is Coming",
+  "notas": "Este archivo se sincroniza con Git. Exporta desde la herramienta HTML y actualiza este archivo para compartir progreso con el equipo."
+}

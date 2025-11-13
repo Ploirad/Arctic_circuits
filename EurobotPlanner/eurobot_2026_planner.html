@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eurobot 2026 - Planificador de Tareas | Academia Cervantes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .controls {
+            padding: 20px 30px;
+            background: #fff;
+            border-bottom: 2px solid #eee;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: scale(1.05);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .phase {
+            margin-bottom: 40px;
+        }
+
+        .phase-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .phase-header:hover {
+            transform: translateX(5px);
+        }
+
+        .phase-icon {
+            font-size: 2em;
+        }
+
+        .phase-title {
+            flex: 1;
+        }
+
+        .phase-title h2 {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .phase-title .phase-desc {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .phase-progress {
+            text-align: right;
+        }
+
+        .phase-progress .progress-bar {
+            width: 150px;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .phase-progress .progress-fill {
+            height: 100%;
+            background: #28a745;
+            transition: width 0.3s;
+        }
+
+        .tasks {
+            display: grid;
+            gap: 15px;
+            padding-left: 20px;
+        }
+
+        .task-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .task-card:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .task-card.completed {
+            background: #e8f5e9;
+            border-color: #28a745;
+        }
+
+        .task-card.in-progress {
+            background: #fff3cd;
+            border-color: #ffc107;
+        }
+
+        .task-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .task-checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            margin-top: 2px;
+        }
+
+        .task-content {
+            flex: 1;
+        }
+
+        .task-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .task-description {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .task-assignee, .task-priority, .task-points {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85em;
+        }
+
+        .assignee-select {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+
+        .priority-badge {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .priority-high {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .priority-medium {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .priority-low {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .points-badge {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+
+        .team-section {
+            margin-top: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .team-member {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .member-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .member-tasks {
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+        }
+
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .controls {
+                display: none;
+            }
+            .task-checkbox {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Eurobot 2026 - Winter is Coming ❄️</h1>
+            <div class="subtitle">Academia Cervantes Robótica | Planificador de Tareas del Equipo</div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalTasks">0</div>
+                <div class="stat-label">Tareas Totales</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="completedTasks">0</div>
+                <div class="stat-label">Completadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="inProgressTasks">0</div>
+                <div class="stat-label">En Progreso</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalPoints">0</div>
+                <div class="stat-label">Puntos Posibles</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
+            <button class="btn btn-primary" onclick="saveProgress()">💾 Guardar Progreso</button>
+            <button class="btn btn-success" onclick="exportData()">📊 Exportar</button>
+            <button class="btn btn-success" onclick="importData()">📥 Importar</button>
+            <button class="btn btn-danger" onclick="resetAll()">🔄 Reset</button>
+
+            <div style="flex: 1"></div>
+
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all" onclick="filterTasks('all')">Todas</button>
+                <button class="filter-btn" data-filter="pending" onclick="filterTasks('pending')">Pendientes</button>
+                <button class="filter-btn" data-filter="in-progress" onclick="filterTasks('in-progress')">En Progreso</button>
+                <button class="filter-btn" data-filter="completed" onclick="filterTasks('completed')">Completadas</button>
+            </div>
+        </div>
+
+        <div class="content" id="tasksContainer">
+            <!-- Las tareas se generarán dinámicamente aquí -->
+        </div>
+
+        <div class="team-section">
+            <h2>👥 Equipo (8 personas)</h2>
+            <div class="team-grid" id="teamGrid">
+                <!-- Se generará dinámicamente -->
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box" style="background: #e8f5e9; border-color: #28a745;"></div>
+                <span>Completada</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: #fff3cd; border-color: #ffc107;"></div>
+                <span>En Progreso</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: white; border-color: #e0e0e0;"></div>
+                <span>Pendiente</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos del proyecto Eurobot 2026
+        const projectData = {
+            phases: [
+                {
+                    id: 'phase1',
+                    icon: '🏗️',
+                    title: 'FASE 1: Diseño y Mecánica Base',
+                    description: 'Construcción del chasis y sistemas de movimiento',
+                    tasks: [
+                        {
+                            id: 't1',
+                            title: 'Diseñar chasis del robot principal',
+                            description: 'Diseño en CAD del chasis base. Dimensiones máximas según normativa.',
+                            priority: 'high',
+                            points: 0,
+                            subtasks: ['Medidas de campo', 'Diseño 3D', 'Lista de materiales']
+                        },
+                        {
+                            id: 't2',
+                            title: 'Sistema de tracción y motores',
+                            description: 'Selección y montaje de motores, ruedas y sistema de movimiento diferencial u omnidireccional.',
+                            priority: 'high',
+                            points: 0
+                        },
+                        {
+                            id: 't3',
+                            title: 'Diseñar SIMA para granero',
+                            description: 'Pequeño robot autónomo (20x20cm) para vaciar refrigeradores y llenarlos con cajas vacías.',
+                            priority: 'medium',
+                            points: 14
+                        },
+                        {
+                            id: 't4',
+                            title: 'Diseñar SIMAs para despensas (hasta 6)',
+                            description: 'Pequeños robots que deben llegar a las despensas y "comer" bellotas con actuador visible.',
+                            priority: 'medium',
+                            points: 55
+                        }
+                    ]
+                },
+                {
+                    id: 'phase2',
+                    icon: '🔧',
+                    title: 'FASE 2: Sistemas de Manipulación',
+                    description: 'Mecanismos para recoger y depositar objetos',
+                    tasks: [
+                        {
+                            id: 't5',
+                            title: 'Sistema de recolección de cajas de bellotas',
+                            description: 'Diseñar mecanismo para recoger cajas (150x50x30mm) del campo y áreas de almacenamiento.',
+                            priority: 'high',
+                            points: 0
+                        },
+                        {
+                            id: 't6',
+                            title: 'Sistema de almacenamiento interno',
+                            description: 'Capacidad para transportar múltiples cajas simultáneamente (min. 6 recomendado).',
+                            priority: 'high',
+                            points: 0
+                        },
+                        {
+                            id: 't7',
+                            title: 'Sistema de depósito en despensas y nido',
+                            description: 'Mecanismo para depositar cajas en zonas delimitadas (200x200mm despensas, 450x600mm nido).',
+                            priority: 'high',
+                            points: 0
+                        },
+                        {
+                            id: 't8',
+                            title: 'Sistema para mover cursor del termómetro',
+                            description: 'Mecanismo para empujar/arrastrar el cursor desde zona 0 hacia el centro (zona 10).',
+                            priority: 'low',
+                            points: 10
+                        }
+                    ]
+                },
+                {
+                    id: 'phase3',
+                    icon: '🧠',
+                    title: 'FASE 3: Electrónica y Sensores',
+                    description: 'Sistemas de control y detección',
+                    tasks: [
+                        {
+                            id: 't9',
+                            title: 'Seleccionar y montar controlador principal',
+                            description: 'Arduino, Raspberry Pi, STM32, etc. con drivers de motores.',
+                            priority: 'high',
+                            points: 0
+                        },
+                        {
+                            id: 't10',
+                            title: 'Sistema de detección de posición',
+                            description: 'Encoders en ruedas para odometría o sistema de navegación alternativo.',
+                            priority: 'high',
+                            points: 0
+                        },
+                        {
+                            id: 't11',
+                            title: 'Sensores de detección de objetos',
+                            description: 'Ultrasonidos, infrarrojos o cámara para detectar cajas y obstáculos.',
+                            priority: 'medium',
+                            points: 0
+                        },
+                        {
+                            id: 't12',
+                            title: 'Sistema de reconocimiento de color (opcional)',
+                            description: 'Sensor de color o cámara + ArUco para identificar cajas azules/amarillas.',
+                            priority: 'low',
+                            points: 0
+                        },
+                        {
+                            id: 't13',
+                            title: 'Alimentación y gestión de energía',
+                            description: 'Baterías, reguladores de voltaje y sistema de apagado de emergencia.',
+                            priority: 'high',
+                            points: 0
+                        }
+                    ]
+                },
+                {
+                    id: 'phase4',
+                    icon: '💻',
+                    title: 'FASE 4: Programación y Estrategia',
+                    description: 'Software de control y lógica del robot',
+                    tasks: [
+                        {
+                            id: 't14',
+                            title: 'Programa de navegación básica',
+                            description: 'Movimiento del robot por coordenadas, evitación de obstáculos.',
+                            priority: 'high',
+                            points: 0
+                        },
+                        {
+                            id: 't15',
+                            title: 'Rutina: Recolectar cajas en nido (6 cajas)',
+                            description: 'Recoger cajas y depositarlas en el nido. 2 pts/caja x 6 = 12 pts.',
+                            priority: 'high',
+                            points: 12
+                        },
+                        {
+                            id: 't16',
+                            title: 'Rutina: Llenar despensas y conseguir primas',
+                            description: 'Depositar cajas en despensas (3pts/caja) y conseguir mayoría en zonas (5pts/zona). Aprox 60-80 pts.',
+                            priority: 'high',
+                            points: 75
+                        },
+                        {
+                            id: 't17',
+                            title: 'Rutina: Activar SIMA del granero',
+                            description: 'Liberar SIMA que vacíe refrigeradores (2pts x 4) y los llene con vacías (5pts x 4).',
+                            priority: 'medium',
+                            points: 28
+                        },
+                        {
+                            id: 't18',
+                            title: 'Rutina: Mover cursor termómetro',
+                            description: 'Programa para centrar el cursor del termómetro (0-10 puntos).',
+                            priority: 'low',
+                            points: 10
+                        },
+                        {
+                            id: 't19',
+                            title: 'Rutina: Regresar al nido',
+                            description: 'Al final del partido, robot debe estar completo en zona de llegada (10 pts).',
+                            priority: 'high',
+                            points: 10
+                        },
+                        {
+                            id: 't20',
+                            title: 'Integrar SIMAs en estrategia',
+                            description: 'Programar liberación y comportamiento de SIMAs para despensas (5pts/zona + 10pts bonus).',
+                            priority: 'medium',
+                            points: 55
+                        }
+                    ]
+                },
+                {
+                    id: 'phase5',
+                    icon: '🧪',
+                    title: 'FASE 5: Pruebas y Optimización',
+                    description: 'Testing y mejoras del robot',
+                    tasks: [
+                        {
+                            id: 't21',
+                            title: 'Construir campo de pruebas (parcial)',
+                            description: 'Montar al menos zonas críticas: nido, despensas, áreas de almacenamiento.',
+                            priority: 'high',
+                            points: 0
+                        },
+                        {
+                            id: 't22',
+                            title: 'Fabricar/conseguir elementos de juego',
+                            description: 'Cajas de bellotas (Jenga pintadas), cajas vacías, cursor termómetro.',
+                            priority: 'high',
+                            points: 0
+                        },
+                        {
+                            id: 't23',
+                            title: 'Pruebas de navegación y precisión',
+                            description: 'Calibrar odometría, probar rutas, ajustar velocidades.',
+                            priority: 'high',
+                            points: 0
+                        },
+                        {
+                            id: 't24',
+                            title: 'Pruebas de manipulación de objetos',
+                            description: 'Verificar agarre, transporte y depósito de cajas de bellotas.',
+                            priority: 'high',
+                            points: 0
+                        },
+                        {
+                            id: 't25',
+                            title: 'Simulacros de partida completos',
+                            description: 'Ejecutar estrategia completa en 100 segundos, cronometrar y optimizar.',
+                            priority: 'high',
+                            points: 0
+                        },
+                        {
+                            id: 't26',
+                            title: 'Plan B y gestión de errores',
+                            description: 'Programar comportamientos alternativos si falla algo.',
+                            priority: 'medium',
+                            points: 0
+                        }
+                    ]
+                },
+                {
+                    id: 'phase6',
+                    icon: '📋',
+                    title: 'FASE 6: Homologación y Competición',
+                    description: 'Preparación final y documentación',
+                    tasks: [
+                        {
+                            id: 't27',
+                            title: 'Documentación técnica del robot',
+                            description: 'Diagramas, esquemas eléctricos, descripción de funcionamiento.',
+                            priority: 'medium',
+                            points: 0
+                        },
+                        {
+                            id: 't28',
+                            title: 'Verificar cumplimiento normativa',
+                            description: 'Dimensiones, peso, seguridad, colores, autonomía.',
+                            priority: 'high',
+                            points: 0
+                        },
+                        {
+                            id: 't29',
+                            title: 'Preparar kit de repuestos y herramientas',
+                            description: 'Piezas de recambio, baterías extra, herramientas necesarias.',
+                            priority: 'high',
+                            points: 0
+                        },
+                        {
+                            id: 't30',
+                            title: 'Ensayo de homologación',
+                            description: 'Simular proceso de homologación: medidas, puesta en marcha, test básico.',
+                            priority: 'high',
+                            points: 0
+                        },
+                        {
+                            id: 't31',
+                            title: 'Definir roles del equipo en competición',
+                            description: 'Piloto, técnico, estratega, etc. Entrenar coordinación.',
+                            priority: 'medium',
+                            points: 0
+                        },
+                        {
+                            id: 't32',
+                            title: 'Transporte y logística',
+                            description: 'Planificar traslado del robot, maletas, documentación.',
+                            priority: 'low',
+                            points: 0
+                        }
+                    ]
+                }
+            ],
+            teamMembers: [
+                'Miembro 1',
+                'Miembro 2',
+                'Miembro 3',
+                'Miembro 4',
+                'Miembro 5',
+                'Miembro 6',
+                'Miembro 7',
+                'Miembro 8'
+            ]
+        };
+
+        // Estado de las tareas (se guarda en localStorage)
+        let taskStates = {};
+        let currentFilter = 'all';
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProgress();
+            renderTasks();
+            renderTeam();
+            updateStats();
+        });
+
+        // Renderizar tareas
+        function renderTasks() {
+            const container = document.getElementById('tasksContainer');
+            container.innerHTML = '';
+
+            projectData.phases.forEach(phase => {
+                const phaseDiv = document.createElement('div');
+                phaseDiv.className = 'phase';
+                phaseDiv.dataset.phaseId = phase.id;
+
+                const completed = phase.tasks.filter(t => taskStates[t.id] === 'completed').length;
+                const total = phase.tasks.length;
+                const progress = total > 0 ? (completed / total * 100) : 0;
+
+                phaseDiv.innerHTML = `
+                    <div class="phase-header">
+                        <div class="phase-icon">${phase.icon}</div>
+                        <div class="phase-title">
+                            <h2>${phase.title}</h2>
+                            <div class="phase-desc">${phase.description}</div>
+                        </div>
+                        <div class="phase-progress">
+                            <div>${completed}/${total} tareas</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tasks" id="${phase.id}-tasks"></div>
+                `;
+
+                container.appendChild(phaseDiv);
+
+                const tasksDiv = document.getElementById(`${phase.id}-tasks`);
+                phase.tasks.forEach(task => {
+                    const state = taskStates[task.id] || 'pending';
+
+                    // Aplicar filtro
+                    if (currentFilter !== 'all' && state !== currentFilter) {
+                        return;
+                    }
+
+                    const taskCard = document.createElement('div');
+                    taskCard.className = `task-card ${state}`;
+                    taskCard.dataset.taskId = task.id;
+
+                    const assignee = taskStates[task.id + '_assignee'] || 'sin-asignar';
+
+                    taskCard.innerHTML = `
+                        <div class="task-header">
+                            <input type="checkbox"
+                                   class="task-checkbox"
+                                   ${state === 'completed' ? 'checked' : ''}
+                                   onchange="toggleTask('${task.id}')">
+                            <div class="task-content">
+                                <div class="task-title">${task.title}</div>
+                                <div class="task-description">${task.description}</div>
+                            </div>
+                        </div>
+                        <div class="task-meta">
+                            <div class="task-assignee">
+                                <strong>👤</strong>
+                                <select class="assignee-select" onchange="assignTask('${task.id}', this.value)">
+                                    <option value="sin-asignar" ${assignee === 'sin-asignar' ? 'selected' : ''}>Sin asignar</option>
+                                    ${projectData.teamMembers.map((member, idx) =>
+                                        `<option value="member${idx+1}" ${assignee === 'member'+(idx+1) ? 'selected' : ''}>${member}</option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                            <div class="task-priority">
+                                <strong>⚡</strong>
+                                <span class="priority-badge priority-${task.priority}">
+                                    ${task.priority === 'high' ? 'Alta' : task.priority === 'medium' ? 'Media' : 'Baja'}
+                                </span>
+                            </div>
+                            ${task.points > 0 ? `
+                                <div class="task-points">
+                                    <strong>🎯</strong>
+                                    <span class="points-badge">${task.points} pts</span>
+                                </div>
+                            ` : ''}
+                            <div style="flex: 1"></div>
+                            <button class="btn btn-primary"
+                                    style="font-size: 0.8em; padding: 5px 10px;"
+                                    onclick="toggleInProgress('${task.id}')">
+                                ${state === 'in-progress' ? '⏸️ Pausar' : '▶️ Iniciar'}
+                            </button>
+                        </div>
+                    `;
+
+                    tasksDiv.appendChild(taskCard);
+                });
+            });
+        }
+
+        // Renderizar equipo
+        function renderTeam() {
+            const teamGrid = document.getElementById('teamGrid');
+            teamGrid.innerHTML = '';
+
+            projectData.teamMembers.forEach((member, idx) => {
+                const memberId = 'member' + (idx + 1);
+                const assignedTasks = Object.keys(taskStates).filter(key =>
+                    key.endsWith('_assignee') && taskStates[key] === memberId
+                ).length;
+
+                const memberCard = document.createElement('div');
+                memberCard.className = 'team-member';
+                memberCard.innerHTML = `
+                    <div class="member-name">${member}</div>
+                    <div class="member-tasks">${assignedTasks} tareas asignadas</div>
+                `;
+                teamGrid.appendChild(memberCard);
+            });
+        }
+
+        // Toggle tarea completada
+        function toggleTask(taskId) {
+            const currentState = taskStates[taskId] || 'pending';
+            taskStates[taskId] = currentState === 'completed' ? 'pending' : 'completed';
+            saveProgress();
+            renderTasks();
+            updateStats();
+        }
+
+        // Toggle en progreso
+        function toggleInProgress(taskId) {
+            const currentState = taskStates[taskId] || 'pending';
+            taskStates[taskId] = currentState === 'in-progress' ? 'pending' : 'in-progress';
+            saveProgress();
+            renderTasks();
+            updateStats();
+        }
+
+        // Asignar tarea
+        function assignTask(taskId, assignee) {
+            taskStates[taskId + '_assignee'] = assignee;
+            saveProgress();
+            renderTeam();
+        }
+
+        // Filtrar tareas
+        function filterTasks(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.filter === filter) {
+                    btn.classList.add('active');
+                }
+            });
+            renderTasks();
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            let total = 0;
+            let completed = 0;
+            let inProgress = 0;
+            let points = 0;
+
+            projectData.phases.forEach(phase => {
+                phase.tasks.forEach(task => {
+                    total++;
+                    const state = taskStates[task.id] || 'pending';
+                    if (state === 'completed') completed++;
+                    if (state === 'in-progress') inProgress++;
+                    if (task.points) points += task.points;
+                });
+            });
+
+            document.getElementById('totalTasks').textContent = total;
+            document.getElementById('completedTasks').textContent = completed;
+            document.getElementById('inProgressTasks').textContent = inProgress;
+            document.getElementById('totalPoints').textContent = points;
+        }
+
+        // Guardar progreso
+        function saveProgress() {
+            localStorage.setItem('eurobot2026_progress', JSON.stringify(taskStates));
+            alert('✅ Progreso guardado correctamente');
+        }
+
+        // Cargar progreso
+        function loadProgress() {
+            const saved = localStorage.getItem('eurobot2026_progress');
+            if (saved) {
+                taskStates = JSON.parse(saved);
+            }
+        }
+
+        // Exportar datos
+        function exportData() {
+            const data = {
+                fecha: new Date().toISOString(),
+                progreso: taskStates,
+                estadisticas: {
+                    total: document.getElementById('totalTasks').textContent,
+                    completadas: document.getElementById('completedTasks').textContent,
+                    enProgreso: document.getElementById('inProgressTasks').textContent,
+                    puntos: document.getElementById('totalPoints').textContent
+                }
+            };
+
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'eurobot2026_progreso_' + new Date().toISOString().split('T')[0] + '.json';
+            a.click();
+        }
+
+        // Importar datos
+        function importData() {
+            document.getElementById('importFile').click();
+        }
+
+        // Manejar archivo importado
+        function handleImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+
+                    // Verificar que el archivo tenga la estructura correcta
+                    if (!data.progreso) {
+                        alert('❌ Error: El archivo JSON no tiene el formato correcto');
+                        return;
+                    }
+
+                    // Cargar los datos
+                    taskStates = data.progreso;
+
+                    // Guardar en localStorage
+                    localStorage.setItem('eurobot2026_progress', JSON.stringify(taskStates));
+
+                    // Actualizar la interfaz
+                    renderTasks();
+                    renderTeam();
+                    updateStats();
+
+                    alert('✅ Progreso importado correctamente!\n\nFecha del archivo: ' +
+                          (data.fecha ? new Date(data.fecha).toLocaleString('es-ES') : 'No disponible'));
+
+                } catch (error) {
+                    alert('❌ Error al leer el archivo: ' + error.message);
+                    console.error('Error importing:', error);
+                }
+            };
+            reader.readAsText(file);
+
+            // Reset input para poder importar el mismo archivo de nuevo si es necesario
+            event.target.value = '';
+        }
+
+        // Resetear todo
+        function resetAll() {
+            if (confirm('¿Estás seguro de que quieres resetear todo el progreso?')) {
+                taskStates = {};
+                localStorage.removeItem('eurobot2026_progress');
+                renderTasks();
+                renderTeam();
+                updateStats();
+                alert('✅ Progreso reseteado');
+            }
+        }
+    </script>
+</body>
+</html>
