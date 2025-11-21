@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrategia Eurobot 2026 - Winter is Coming</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #2980b9;
+            margin-top: 0;
+            border-bottom: 3px solid;
+            padding-bottom: 10px;
+        }
+        .phase-box {
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 3px solid;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .phase-1 {
+            background: linear-gradient(135deg, #e8f6f3 0%, #d5f4e6 100%);
+            border-color: #1abc9c;
+        }
+        .phase-1 h2 {
+            border-color: #1abc9c;
+            color: #16a085;
+        }
+        .phase-2 {
+            background: linear-gradient(135deg, #fef9e7 0%, #fcf3cf 100%);
+            border-color: #f39c12;
+        }
+        .phase-2 h2 {
+            border-color: #f39c12;
+            color: #d68910;
+        }
+        .phase-3 {
+            background: linear-gradient(135deg, #f4ecf7 0%, #e8daef 100%);
+            border-color: #9b59b6;
+        }
+        .phase-3 h2 {
+            border-color: #9b59b6;
+            color: #8e44ad;
+        }
+        
+        /* Estilos para acordeón */
+        details {
+            background-color: white;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        details:hover {
+            border-color: #1abc9c;
+            box-shadow: 0 2px 8px rgba(26, 188, 156, 0.2);
+        }
+        details[open] {
+            border-color: #1abc9c;
+            box-shadow: 0 4px 12px rgba(26, 188, 156, 0.3);
+        }
+        summary {
+            padding: 18px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            list-style: none;
+            background: linear-gradient(90deg, #f8f9fa 0%, #ffffff 100%);
+            transition: background-color 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+        summary:hover {
+            background: linear-gradient(90deg, #e8f8f5 0%, #d5f4e6 100%);
+        }
+        summary::-webkit-details-marker {
+            display: none;
+        }
+        summary::before {
+            content: '▶';
+            font-size: 0.8em;
+            color: #1abc9c;
+            margin-right: 10px;
+            transition: transform 0.3s;
+        }
+        details[open] summary::before {
+            transform: rotate(90deg);
+        }
+        details[open] summary {
+            border-bottom: 2px solid #e8f8f5;
+            background: linear-gradient(90deg, #d5f4e6 0%, #a9dfbf 100%);
+        }
+        .action-title {
+            flex: 1;
+        }
+        .details-content {
+            padding: 20px;
+            font-size: 0.95em;
+            background-color: #fafafa;
+        }
+        .action-description {
+            background-color: #fff;
+            padding: 12px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        .sub-steps {
+            margin-top: 15px;
+        }
+        .sub-step {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed #ddd;
+            padding: 10px 5px;
+            background-color: white;
+            margin-bottom: 5px;
+            border-radius: 4px;
+        }
+        .sub-step:last-child {
+            border-bottom: none;
+        }
+        .sub-step:hover {
+            background-color: #f0f9ff;
+        }
+        
+        .points-badge {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);
+            white-space: nowrap;
+        }
+        .total-points {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(39, 174, 96, 0.3);
+        }
+
+        .task-alert {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe5e5 100%);
+            border: 3px solid #e74c3c;
+            color: #c0392b;
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.2);
+        }
+        .robot-type {
+            background-color: #fff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .robot-type:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+        }
+        code {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .important-note {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            text-align: center;
+            border: 2px solid #ffc107;
+            font-weight: 500;
+        }
+        .note-icon {
+            font-size: 1.5em;
+            margin-right: 8px;
+        }
+        .info-box {
+            background-color: #d6eaf8;
+            border-left: 5px solid #3498db;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>❄️ Eurobot 2026: Winter is Coming ❄️</h1>
+    <p class="subtitle">Preparación de estrategia para la competición de robótica</p>
+    
+    <div class="important-note">
+        <span class="note-icon">⚠️</span>
+        <strong>Duración del partido: 100 segundos</strong> | 
+        Las SIMAs obreras solo pueden salir a partir del segundo 85
+    </div>
+
+    <!-- FASE 1 -->
+    <div class="phase-box phase-1">
+        <h2>📋 Fase 1: Estrategia de Juego</h2>
+        <p><strong>Objetivo:</strong> Entender las 5 acciones posibles y decidir cuáles acometer. Haced clic en cada acción para ver los detalles:</p>
+        
+        <!-- Acción 1 -->
+        <details>
+            <summary>
+                <span class="action-title">Acción 1: ¡Mantengamos las bellotas calientes!</span>
+                <span class="total-points">Hasta ~200 pts</span>
+            </summary>
+            <div class="details-content">
+                <div class="action-description">
+                    <strong>🎯 Objetivo:</strong> Recolectar cajas de bellotas (150x50x30mm, pintadas azul/amarillo) y depositarlas en las despensas o en vuestro nido.
+                </div>
+                <div class="sub-steps">
+                    <div class="sub-step">
+                        <span>📦 Caja de bellotas depositada en el NIDO (máx 6 cajas)</span>
+                        <span class="points-badge">2 pts/caja</span>
+                    </div>
+                    <div class="sub-step">
+                        <span>📦 Caja de bellotas válida en DESPENSA (cara superior de tu color o sin pintar)</span>
+                        <span class="points-badge">3 pts/caja</span>
+                    </div>
+                    <div class="sub-step">
+                        <span>🏆 PRIMA por despensa (si tenéis mayoría de cajas de vuestro color en esa despensa)</span>
+                        <span class="points-badge">5 pts/despensa</span>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <strong>Nota:</strong> Hay 48 cajas en total distribuidas en áreas de almacenamiento. Las cajas en el nido no pueden ser robadas. Las de las despensas sí.
+                </div>
+            </div>
+        </details>
+
+        <!-- Acción 2 -->
+        <details>
+            <summary>
+                <span class="action-title">Acción 2: ¡Encontrar es conservar!</span>
+                <span class="total-points">Hasta 28 pts (ambos equipos)</span>
+            </summary>
+            <div class="details-content">
+                <div class="action-description">
+                    <strong>🎯 Objetivo:</strong> Usar la <strong>SIMA Ninja</strong> (en el granero elevado) para vaciar los 4 refrigeradores y rellenarlos con cajas vacías.
+                </div>
+                <div class="sub-steps">
+                    <div class="sub-step">
+                        <span>🧊 Refrigerador VACÍO de cajas de bellotas (al final del partido)</span>
+                        <span class="points-badge">2 pts/refrigerador</span>
+                    </div>
+                    <div class="sub-step">
+                        <span>⬛ Refrigerador LLENO de cajas vacías (negras) (al final del partido)</span>
+                        <span class="points-badge">5 pts/refrigerador</span>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <strong>Importante:</strong> Esta acción da puntos a AMBOS equipos. La SIMA Ninja (máx 1) debe colocarse en la zona de inicio del granero (20x20cm) y tiene todo el partido para actuar. Cada refrigerador tiene inicialmente 2 cajas (1 azul, 1 amarilla).
+                </div>
+            </div>
+        </details>
+
+        <!-- Acción 3 -->
+        <details>
+            <summary>
+                <span class="action-title">Acción 3: Ni demasiado calor, ni demasiado frío</span>
+                <span class="total-points">Hasta 10 pts</span>
+            </summary>
+            <div class="details-content">
+                <div class="action-description">
+                    <strong>🎯 Objetivo:</strong> Mover el cursor del termómetro desde la zona "0" inicial hasta el centro para ajustar la temperatura óptima de la despensa.
+                </div>
+                <div class="sub-steps">
+                    <div class="sub-step">
+                        <span>🌡️ Puntos = Número de la zona alcanzada por el cursor</span>
+                        <span class="points-badge">X pts</span>
+                    </div>
+                    <div class="sub-step">
+                        <span>📍 Zona 0 = 0 pts | Zona 5 (centro) = 5 pts | Zona 10 = 10 pts</span>
+                        <span class="points-badge">Variable</span>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <strong>Nota:</strong> El termómetro tiene 11 zonas numeradas (0 a 10). El cursor (100x100x45mm máx) debe colocarse inicialmente en la zona "0". El objetivo es llegar al centro. Si el oponente mueve significativamente vuestro cursor, ganáis automáticamente los puntos máximos (10 pts).
+                </div>
+            </div>
+        </details>
+
+        <!-- Acción 4 -->
+        <details>
+            <summary>
+                <span class="action-title">Acción 4: Nido, dulce nido</span>
+                <span class="total-points">Hasta 10 pts</span>
+            </summary>
+            <div class="details-content">
+                <div class="action-description">
+                    <strong>🎯 Objetivo:</strong> El robot principal (Mamá Ardilla) debe regresar a su nido (zona de inicio 45x60cm) antes de que termine el partido.
+                </div>
+                <div class="sub-steps">
+                    <div class="sub-step">
+                        <span>🏠 Robot PARCIALMENTE dentro del nido (parte de su proyección vertical)</span>
+                        <span class="points-badge">5 pts</span>
+                    </div>
+                    <div class="sub-step">
+                        <span>🏠 Robot COMPLETAMENTE dentro del nido (toda su proyección vertical)</span>
+                        <span class="points-badge">+5 pts (10 total)</span>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <strong>Nota:</strong> Solo cuenta el robot principal. Las SIMAs están excluidas de esta acción.
+                </div>
+            </div>
+        </details>
+
+        <!-- Acción 5 -->
+        <details>
+            <summary>
+                <span class="action-title">Acción 5: ¡Hora de comer! (Baile de las SIMAs)</span>
+                <span class="total-points">Hasta 40 pts</span>
+            </summary>
+            <div class="details-content">
+                <div class="action-description">
+                    <strong>🎯 Objetivo:</strong> Liberar las <strong>SIMAs obreras</strong> (máx 6) a partir del segundo 85 para que lleguen a las despensas y "coman" (actuador móvil visible).
+                </div>
+                <div class="sub-steps">
+                    <div class="sub-step">
+                        <span>🐿️ SIMA en una despensa (proyección vertical en zona verde 200x200mm)</span>
+                        <span class="points-badge">5 pts/despensa</span>
+                    </div>
+                    <div class="sub-step">
+                        <span>🍽️ TODAS las SIMAs "comiendo" (actuador móvil visible e inmóvil al final)</span>
+                        <span class="points-badge">10 pts extra</span>
+                    </div>
+                </div>
+                <div class="info-box">
+                    <strong>Importante:</strong> Las SIMAs obreras (hasta 6) deben estar en el nido al inicio. Si salen antes del segundo 85, serán retiradas. Todas las SIMAs (incluida la Ninja) pueden participar en esta acción. Las acciones "ir a la zona" y "comer" son independientes.
+                </div>
+            </div>
+        </details>
+
+        <div class="task-alert">
+            📝 <strong>TAREA:</strong> Rellenar <code>Fase1_Estrategia_de_juego/README.md</code><br>
+            Describid qué robots vais a construir y qué acciones vais a intentar completar.
+        </div>
+    </div>
+
+    <!-- FASE 2 -->
+    <div class="phase-box phase-2">
+        <h2>🔧 Fase 2: Diseño de Robots (Chasis Básicos)</h2>
+        <p><strong>Objetivo:</strong> Diseñar prototipos básicos para cada tipo de robot que necesitéis según vuestra estrategia.</p>
+        
+        <div class="robot-type">
+            <strong>🤖 1. Robot Principal (Mamá Ardilla)</strong> - Máximo 1 unidad
+            <br><em>Robot versátil para recolectar cajas, mover el cursor del termómetro y regresar al nido.</em>
+            <br><small style="color: #7f8c8d;">Dimensiones iniciales: debe caber en zona 45x60cm</small>
+        </div>
+        
+        <div class="robot-type">
+            <strong>🥷 2. SIMA Ninja</strong> - Máximo 1 unidad
+            <br><em>Pequeño actuador móvil independiente para operar en el granero (zona elevada 55mm).</em>
+            <br><small style="color: #7f8c8d;">Dimensiones iniciales: 20x20cm máx. Misión: vaciar refrigeradores y rellenarlos con cajas vacías.</small>
+        </div>
+        
+        <div class="robot-type">
+            <strong>👷 3. SIMAs Obreras</strong> - Hasta 6 unidades
+            <br><em>Pequeños actuadores móviles que salen al segundo 85 para ir a las despensas.</em>
+            <br><small style="color: #7f8c8d;">Deben tener un actuador móvil visible para "comer". Inicialmente en el nido.</small>
+        </div>
+
+        <div class="info-box">
+            <strong>Recordad:</strong> Para facilitar la identificación, debe haber armonía de diseño y colores entre las SIMAs y el robot principal.
+        </div>
+
+        <div class="task-alert">
+            📝 <strong>TAREA:</strong> Actualizar los ficheros en <code>Fase2_Chasis_basicos/</code>:<br>
+            • <code>ReadmeRobotPrincipal.md</code> - Diseño del robot madre<br>
+            • <code>ReadmeSimaNinja.md</code> - Diseño de la SIMA del granero<br>
+            • <code>ReadmeSimasNormales.md</code> - Diseño de las SIMAs obreras
+        </div>
+    </div>
+
+    <!-- FASE 3 -->
+    <div class="phase-box phase-3">
+        <h2>👥 Fase 3: Distribución de Tareas</h2>
+        <p><strong>Objetivo:</strong> Asignar responsabilidades a cada miembro del equipo según la estrategia y diseños definidos.</p>
+        
+        <div class="info-box">
+            <strong>Áreas clave a cubrir:</strong>
+            <ul style="margin: 10px 0;">
+                <li><strong>Mecánica:</strong> Construcción de chasis, sistemas de recolección, actuadores</li>
+                <li><strong>Electrónica:</strong> Motores, sensores, alimentación, comunicaciones</li>
+                <li><strong>Programación:</strong> Control autónomo, estrategia, visión (Aruco), temporización</li>
+                <li><strong>Gestión:</strong> Coordinación, planificación, documentación</li>
+            </ul>
+        </div>
+
+        <div class="task-alert">
+            📝 <strong>TAREA:</strong> Rellenar <code>Fase3_Distribucion_de_Tareas/README.md</code><br>
+            Asignad responsables para cada área y estableced un cronograma básico con hitos principales.
+        </div>
+    </div>
+
+    <p style="text-align: center; margin-top: 40px; color: #7f8c8d; font-size: 0.9em;">
+        <em>🏆 ¡Mucha suerte en la preparación para Eurobot 2026! 🏆</em><br>
+        <small>Competición: 16-18 de abril de 2026 | Inscripción: antes del 15 de enero de 2026</small>
+    </p>
+</div>
+
+</body>
+</html>
