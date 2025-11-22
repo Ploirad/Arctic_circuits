@@ -1,3 +1,3 @@
-# Artic_circuits
+# Arctic_circuits
 hola :)
 Juggernut is ready to cook
