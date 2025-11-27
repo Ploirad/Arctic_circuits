@@ -1,0 +1,89 @@
+name: Auto-assign Issues
+
+on:
+  issues:
+    types: [opened, labeled]
+
+jobs:
+  auto_assign_David:
+    if: contains(github.event.issue.labels.*.name, 'Mecánica') || contains(github.event.issue.labels.*.name, 'Pruebas')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-assign to ElBulbasaurio
+        uses: actions-ecosystem/action-add-assignees@v1
+        with:
+          assignees: ElBulbasaurio
+          github_token: ${{ secrets.ACTIONS }}
+
+
+  auto_assign_Dario:
+    if: contains(github.event.issue.labels.*.name, 'Documentación') || contains(github.event.issue.labels.*.name, 'Pruebas')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-assign to Ploirad
+        uses: actions-ecosystem/action-add-assignees@v1
+        with:
+          assignees: Ploirad
+          github_token: ${{ secrets.ACTIONS }}
+
+
+  auto_assign_Adrian:
+    if: contains(github.event.issue.labels.*.name, 'Programación') || contains(github.event.issue.labels.*.name, 'Pruebas')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-assign to AdriROBOTICS
+        uses: actions-ecosystem/action-add-assignees@v1
+        with:
+          assignees: AdriROBOTICS
+          github_token: ${{ secrets.ACTIONS }}
+
+  auto_assign_Diego:
+    if: contains(github.event.issue.labels.*.name, 'Programación') || contains(github.event.issue.labels.*.name, 'Pruebas')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-assign to Dvfmv
+        uses: actions-ecosystem/action-add-assignees@v1
+        with:
+          assignees: Dvfmv
+          github_token: ${{ secrets.ACTIONS }}
+
+
+  auto_assign_Kiko:
+    if: contains(github.event.issue.labels.*.name, 'Electrónica') || contains(github.event.issue.labels.*.name, 'Pruebas')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-assign to JFFT30
+        uses: actions-ecosystem/action-add-assignees@v1
+        with:
+          assignees: JFFT30
+          github_token: ${{ secrets.ACTIONS }}
+          
+  auto_assign_Karim:
+    if: contains(github.event.issue.labels.*.name, 'Electrónica') || contains(github.event.issue.labels.*.name, 'Pruebas')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-assign to khb102030
+        uses: actions-ecosystem/action-add-assignees@v1
+        with:
+          assignees: khb102030
+          github_token: ${{ secrets.ACTIONS }}
+          
+  auto_assign_Rafa:
+    if: contains(github.event.issue.labels.*.name, 'Electrónica') || contains(github.event.issue.labels.*.name, 'Pruebas')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-assign to Walter Wide
+        uses: actions-ecosystem/action-add-assignees@v1
+        with:
+          assignees: Walter Wide
+          github_token: ${{ secrets.ACTIONS }}
+          
+  auto_assign_Samuel:
+    if: contains(github.event.issue.labels.*.name, 'Electrónica') || contains(github.event.issue.labels.*.name, 'Pruebas')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Auto-assign to sam
+        uses: actions-ecosystem/action-add-assignees@v1
+        with:
+          assignees: sam
+          github_token: ${{ secrets.ACTIONS }}
