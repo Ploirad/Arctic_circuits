@@ -14,4 +14,4 @@ Cada una de las SIMAs va a ir directamente tras los 85 segundos hacia su despens
 En un principio se va n a fabricar 3 SIMAs, cada una con diferente diseño y programa. En caso de suficiente tiempo nos dedicaremos a hacer hasta un máximo de dos SIMAs extra dando un total de 5 SIMAs.
 
 ## 4. Boceto / Esquema
-Por hacer.
+![Esquema](Esquema_SIMA.png)
