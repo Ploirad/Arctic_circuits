@@ -3,18 +3,25 @@
 **Instrucciones:**
 Basándoos en la estrategia (Fase 1) y los diseños (Fase 2), asignad tareas a los miembros del equipo.
 
-## 1. Equipo de Mecánica / Chasis
-- Responsable:
-- Tareas:
+## Robot principal:
 
-## 2. Equipo de Electrónica
-- Responsable:
-- Tareas:
+### Diseño y montaje del termometro:
+### Diseño y montaje de la vuelta a casa:
+### Diseño y montaje de la recogida de bellotas:
+### Electrónica:
+### Programación:
 
-## 3. Equipo de Programación / Estrategia
-- Responsable:
-- Tareas:
+## Simas:
 
-## 4. Cronograma Básico
-*(Hitos principales para tener los robots listos)*
+### Diseño y montaje: Diego
+### Electrónica: Darío y Diego
+### Programación: Darío
 
+## Mando:
+
+### Diseño y montaje:
+Samuel Prieto García
+### Electrónica:
+Samuel Prieto García
+### Programación:
+Samuel Prieto García
