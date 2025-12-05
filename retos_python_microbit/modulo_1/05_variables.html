@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reto 5: Variables - micro:bit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #5f72bd 0%, #9921e8 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 2.5rem;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            color: #5f72bd;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #9921e8;
+            display: inline-block;
+        }
+
+        .concept-box {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #5f72bd;
+        }
+
+        .concept-box h3 {
+            color: #4a5568;
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+        }
+
+        .concept-box p {
+            line-height: 1.7;
+            color: #2d3748;
+        }
+
+        .analogy-box {
+            background: linear-gradient(135deg, #ffd3a5 0%, #fd6585 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #c53030;
+            color: white;
+        }
+
+        .analogy-box h3 {
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+        }
+
+        .rules-box {
+            background: #fff5f5;
+            border: 2px solid #fc8181;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .rules-box h4 {
+            color: #c53030;
+            margin-bottom: 1rem;
+        }
+
+        .rules-box ul {
+            margin-left: 1.5rem;
+        }
+
+        .rules-box li {
+            margin: 0.5rem 0;
+            color: #2d3748;
+        }
+
+        .challenge-box {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #319795;
+        }
+
+        .challenge-box h3 {
+            color: #234e52;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .challenge-box ul {
+            margin-left: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .challenge-box li {
+            margin: 0.8rem 0;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #68d391;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .code-block .comment {
+            color: #a0aec0;
+        }
+
+        .code-block .keyword {
+            color: #fc8181;
+        }
+
+        .code-block .string {
+            color: #fbd38d;
+        }
+
+        .code-block .number {
+            color: #90cdf4;
+        }
+
+        .code-block .variable {
+            color: #f687b3;
+        }
+
+        .tip-box {
+            background: #c6f6d5;
+            border-left: 5px solid #48bb78;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .tip-box h4 {
+            color: #2f855a;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .link-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .link-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .emoji {
+            font-size: 1.5rem;
+        }
+
+        .example-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .example-card {
+            background: #f7fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .example-card h4 {
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📦 Reto 5: Variables</h1>
+            <p class="subtitle">Módulo 1: Introducción a Python y Programación</p>
+            <span class="badge">Sección 1.5 - Almacenamiento de Datos</span>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2>📚 Conceptos Clave</h2>
+
+                <div class="concept-box">
+                    <h3>¿Qué es una variable?</h3>
+                    <p>
+                        Una <strong>variable</strong> es como una caja con una etiqueta donde guardas información.
+                        Puedes poner cosas dentro, sacarlas, cambiarlas, y usar lo que hay dentro cuando lo necesites.
+                        La etiqueta es el nombre de la variable, y lo que guardas dentro es su valor.
+                    </p>
+                </div>
+
+                <div class="analogy-box">
+                    <h3>🎁 Analogía del mundo real</h3>
+                    <p>
+                        Imagina que tienes cajas en tu habitación. Una caja dice "juguetes", otra dice "libros",
+                        y otra dice "ropa". Puedes poner cosas en cada caja, cambiar lo que hay dentro, o sacar
+                        cosas cuando las necesites. Las variables funcionan exactamente igual, pero en tu programa.
+                    </p>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Creando variables</h3>
+                    <p>
+                        En Python, crear una variable es muy fácil. Solo escribes un nombre, el símbolo <code>=</code>,
+                        y el valor que quieres guardar. A esto se le llama "asignar un valor a una variable".
+                    </p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📝 Reglas para Nombres de Variables</h2>
+
+                <div class="rules-box">
+                    <h4>✅ Reglas obligatorias:</h4>
+                    <ul>
+                        <li>Solo pueden contener letras, números y guiones bajos (_)</li>
+                        <li>Deben empezar con una letra o guión bajo (no con un número)</li>
+                        <li>No pueden tener espacios (usa guiones bajos en su lugar)</li>
+                        <li>No pueden ser palabras reservadas de Python (como <code>if</code>, <code>for</code>,
+                            <code>while</code>)</li>
+                        <li>Python diferencia mayúsculas y minúsculas (<code>edad</code> ≠ <code>Edad</code>)</li>
+                    </ul>
+                </div>
+
+                <div class="example-grid">
+                    <div class="example-card">
+                        <h4>✅ Buenos nombres:</h4>
+                        <div class="code-block" style="margin-top: 0.5rem; padding: 0.8rem;">
+                            <span class="variable">nombre</span>
+                            <span class="variable">edad_usuario</span>
+                            <span class="variable">temperatura_max</span>
+                            <span class="variable">contador1</span>
+                            <span class="variable">_privado</span>
+                        </div>
+                    </div>
+
+                    <div class="example-card">
+                        <h4>❌ Nombres incorrectos:</h4>
+                        <div class="code-block" style="margin-top: 0.5rem; padding: 0.8rem;">
+                            2edad
+                            mi nombre
+                            for
+                            class
+                            temperatura-max
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💡 Ejemplos con micro:bit</h2>
+
+                <p><strong>Ejemplo 1: Crear y usar variables</strong></p>
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># Crear una variable</span>
+                    <span class="variable">nombre</span> = <span class="string">"micro:bit"</span>
+                    <span class="variable">edad</span> = <span class="number">5</span>
+
+                    <span class="comment"># Usar las variables</span>
+                    display.scroll(<span class="variable">nombre</span>)
+                    display.show(<span class="variable">edad</span>)
+                </div>
+
+                <p style="margin-top: 1.5rem;"><strong>Ejemplo 2: Variables con sensores</strong></p>
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># Guardar lecturas de sensores en variables</span>
+                    <span class="variable">temp</span> = temperature()
+                    <span class="variable">luz</span> = display.read_light_level()
+
+                    display.scroll(<span class="string">"Temp:"</span>)
+                    display.show(<span class="variable">temp</span>)
+                    sleep(<span class="number">1500</span>)
+
+                    display.scroll(<span class="string">"Luz:"</span>)
+                    display.show(<span class="variable">luz</span>)
+                </div>
+
+                <p style="margin-top: 1.5rem;"><strong>Ejemplo 3: Modificar variables</strong></p>
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># Crear un contador</span>
+                    <span class="variable">contador</span> = <span class="number">0</span>
+
+                    <span class="keyword">while</span> <span class="boolean">True</span>:
+                    <span class="keyword">if</span> button_a.was_pressed():
+                    <span class="variable">contador</span> = <span class="variable">contador</span> + <span
+                        class="number">1</span>
+                    display.show(<span class="variable">contador</span>)
+
+                    <span class="keyword">if</span> button_b.was_pressed():
+                    <span class="variable">contador</span> = <span class="number">0</span>
+                    display.show(<span class="variable">contador</span>)
+
+                    sleep(<span class="number">100</span>)
+                </div>
+
+                <p style="margin-top: 1.5rem;"><strong>Ejemplo 4: Variables en cálculos</strong></p>
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># Crear variables con datos</span>
+                    <span class="variable">base</span> = <span class="number">10</span>
+                    <span class="variable">altura</span> = <span class="number">5</span>
+
+                    <span class="comment"># Calcular área del triángulo</span>
+                    <span class="variable">area</span> = (<span class="variable">base</span> * <span
+                        class="variable">altura</span>) // <span class="number">2</span>
+
+                    display.scroll(<span class="string">"Area:"</span>)
+                    display.show(<span class="variable">area</span>)
+                </div>
+
+                <div class="tip-box">
+                    <h4>💡 Consejo importante</h4>
+                    <p>
+                        Usa nombres descriptivos para tus variables. En lugar de <code>x</code> o <code>a</code>,
+                        usa nombres como <code>temperatura</code>, <code>contador_clicks</code>, o
+                        <code>velocidad_motor</code>.
+                        ¡Tu código será mucho más fácil de entender!
+                    </p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎯 Tu Reto</h2>
+
+                <div class="challenge-box">
+                    <h3><span class="emoji">🎮</span> ¡Crea un sistema de puntuación!</h3>
+                    <p><strong>Objetivo:</strong> Crear un programa que use variables para llevar el control de
+                        diferentes valores.</p>
+
+                    <h4 style="margin-top: 1.5rem; color: #234e52;">Parte 1 - Información personal:</h4>
+                    <ul>
+                        <li>Crea variables para: tu nombre, edad, ciudad, y hobby favorito</li>
+                        <li>Muestra toda la información en secuencia en el micro:bit</li>
+                        <li>Usa <code>sleep()</code> entre cada dato para que se vea bien</li>
+                    </ul>
+
+                    <h4 style="margin-top: 1.5rem; color: #234e52;">Parte 2 - Contador interactivo:</h4>
+                    <ul>
+                        <li>Crea una variable <code>puntos</code> que empiece en 0</li>
+                        <li>Botón A: suma 1 punto</li>
+                        <li>Botón B: resta 1 punto (pero no puede ser negativo)</li>
+                        <li>Botones A+B juntos: resetea a 0</li>
+                        <li>Muestra siempre el puntaje actual en la pantalla</li>
+                    </ul>
+
+                    <h4 style="margin-top: 1.5rem; color: #234e52;">Parte 3 - Estadísticas:</h4>
+                    <ul>
+                        <li>Crea variables para almacenar múltiples lecturas de temperatura</li>
+                        <li>Calcula y muestra: la suma, el promedio, o el valor máximo/mínimo</li>
+                        <li>Usa variables para hacer seguimiento de cuántas veces se ha presionado cada botón</li>
+                    </ul>
+
+                    <h4 style="margin-top: 1.5rem; color: #234e52;">Bonus - Desafío avanzado:</h4>
+                    <ul>
+                        <li>Crea un "health bar" (barra de vida) que comience en 100</li>
+                        <li>Botón A: recibe daño (-10 vida)</li>
+                        <li>Botón B: se cura (+5 vida, máximo 100)</li>
+                        <li>Cuando la vida llega a 0, muestra un Image.SKULL</li>
+                        <li>Cuando la vida es mayor a 80, muestra Image.HAPPY</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔍 Ejemplo de Solución</h2>
+                <p>Solución para la Parte 2 (contador interactivo):</p>
+
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># Crear la variable puntos</span>
+                    <span class="variable">puntos</span> = <span class="number">0</span>
+
+                    <span class="comment"># Mostrar puntos iniciales</span>
+                    display.show(<span class="variable">puntos</span>)
+
+                    <span class="comment"># Bucle principal</span>
+                    <span class="keyword">while</span> <span class="boolean">True</span>:
+                    <span class="comment"># Si presionan A y B juntos</span>
+                    <span class="keyword">if</span> button_a.is_pressed() <span class="keyword">and</span>
+                    button_b.is_pressed():
+                    <span class="variable">puntos</span> = <span class="number">0</span>
+                    display.show(<span class="variable">puntos</span>)
+                    sleep(<span class="number">500</span>)
+
+                    <span class="comment"># Si presionan solo A</span>
+                    <span class="keyword">elif</span> button_a.was_pressed():
+                    <span class="variable">puntos</span> = <span class="variable">puntos</span> + <span
+                        class="number">1</span>
+                    display.show(<span class="variable">puntos</span>)
+
+                    <span class="comment"># Si presionan solo B</span>
+                    <span class="keyword">elif</span> button_b.was_pressed():
+                    <span class="keyword">if</span> <span class="variable">puntos</span> > <span
+                        class="number">0</span>:
+                    <span class="variable">puntos</span> = <span class="variable">puntos</span> - <span
+                        class="number">1</span>
+                    display.show(<span class="variable">puntos</span>)
+
+                    sleep(<span class="number">100</span>)
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔗 Recursos</h2>
+                <a href="https://python.microbit.org/" target="_blank" class="link-button">
+                    🖥️ Abrir Editor de micro:bit Python
+                </a>
+            </div>
+
+            <div class="tip-box">
+                <h4>🚀 Atajo útil</h4>
+                <p>
+                    En lugar de escribir <code>puntos = puntos + 1</code>, puedes usar el atajo
+                    <code>puntos += 1</code>. Funciona igual pero es más corto. También existen
+                    <code>-=</code>, <code>*=</code>, y <code>/=</code>.
+                </p>
+            </div>
+        </div>
+
+        <footer>
+            <p>💻 Retos Python micro:bit - Módulo 1 | ¡Felicidades, completaste el Módulo 1! 🎉</p>
+        </footer>
+    </div>
+</body>
+
+</html>
