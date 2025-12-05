@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reto 4: Operadores Básicos - micro:bit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #feada6 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 2.5rem;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            color: #c53030;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #ff6b6b;
+            display: inline-block;
+        }
+
+        .concept-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #e17055;
+        }
+
+        .concept-box h3 {
+            color: #744210;
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+        }
+
+        .concept-box p {
+            line-height: 1.7;
+            color: #2d3748;
+        }
+
+        .operators-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .operators-table th {
+            background: #ff6b6b;
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .operators-table td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .operators-table tr:hover {
+            background: #fff5f5;
+        }
+
+        .operators-table code {
+            background: #2d3748;
+            color: #68d391;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .challenge-box {
+            background: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #38a169;
+        }
+
+        .challenge-box h3 {
+            color: #22543d;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .challenge-box ul {
+            margin-left: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .challenge-box li {
+            margin: 0.8rem 0;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #68d391;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .code-block .comment {
+            color: #a0aec0;
+        }
+
+        .code-block .keyword {
+            color: #fc8181;
+        }
+
+        .code-block .string {
+            color: #fbd38d;
+        }
+
+        .code-block .number {
+            color: #90cdf4;
+        }
+
+        .tip-box {
+            background: #bee3f8;
+            border-left: 5px solid #3182ce;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .tip-box h4 {
+            color: #2c5282;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .warning-box {
+            background: #fed7d7;
+            border-left: 5px solid #fc8181;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box h4 {
+            color: #c53030;
+            margin-bottom: 0.5rem;
+        }
+
+        .link-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .link-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+        }
+
+        .emoji {
+            font-size: 1.5rem;
+        }
+
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>➕ Reto 4: Operadores Básicos</h1>
+            <p class="subtitle">Módulo 1: Introducción a Python y Programación</p>
+            <span class="badge">Sección 1.4 - Operaciones Matemáticas</span>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2>📚 Conceptos Clave</h2>
+
+                <div class="concept-box">
+                    <h3>¿Qué son los operadores?</h3>
+                    <p>
+                        Los <strong>operadores</strong> son símbolos que le dicen a Python qué hacer con los datos.
+                        Son como las señales matemáticas que conoces (+, -, ×, ÷), pero en programación. ¡Tu micro:bit
+                        puede hacer cálculos matemáticos!
+                    </p>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Python como calculadora</h3>
+                    <p>
+                        Python puede funcionar como una calculadora super poderosa. Puede sumar, restar, multiplicar,
+                        dividir y mucho más. Estos cálculos son útiles para controlar robots, sensores, y crear
+                        programas interactivos.
+                    </p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🧮 Operadores Aritméticos</h2>
+
+                <table class="operators-table">
+                    <thead>
+                        <tr>
+                            <th>Operador</th>
+                            <th>Nombre</th>
+                            <th>Ejemplo</th>
+                            <th>Resultado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>+</code></td>
+                            <td>Suma</td>
+                            <td><code>10 + 5</code></td>
+                            <td>15</td>
+                        </tr>
+                        <tr>
+                            <td><code>-</code></td>
+                            <td>Resta</td>
+                            <td><code>10 - 5</code></td>
+                            <td>5</td>
+                        </tr>
+                        <tr>
+                            <td><code>*</code></td>
+                            <td>Multiplicación</td>
+                            <td><code>10 * 5</code></td>
+                            <td>50</td>
+                        </tr>
+                        <tr>
+                            <td><code>/</code></td>
+                            <td>División</td>
+                            <td><code>10 / 5</code></td>
+                            <td>2.0</td>
+                        </tr>
+                        <tr>
+                            <td><code>//</code></td>
+                            <td>División entera</td>
+                            <td><code>10 // 3</code></td>
+                            <td>3</td>
+                        </tr>
+                        <tr>
+                            <td><code>%</code></td>
+                            <td>Módulo (residuo)</td>
+                            <td><code>10 % 3</code></td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td><code>**</code></td>
+                            <td>Potencia</td>
+                            <td><code>2 ** 3</code></td>
+                            <td>8</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="tip-box">
+                    <h4>💡 Diferencia importante</h4>
+                    <p>
+                        <code>/</code> siempre da un resultado decimal (float), mientras que <code>//</code>
+                        descarta los decimales y solo te da la parte entera.
+                    </p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💡 Ejemplos con micro:bit</h2>
+
+                <p><strong>Ejemplo 1: Suma simple</strong></p>
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># Calcular la suma de dos números</span>
+                    display.scroll(<span class="string">"5 + 3 ="</span>)
+                    display.show(<span class="number">5</span> + <span class="number">3</span>)
+                    <span class="comment"># Mostrará: 8</span>
+                </div>
+
+                <p style="margin-top: 1.5rem;"><strong>Ejemplo 2: Diferentes operaciones</strong></p>
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># Multiplicación</span>
+                    display.scroll(<span class="string">"10 x 3"</span>)
+                    display.show(<span class="number">10</span> * <span class="number">3</span>)
+                    sleep(<span class="number">2000</span>)
+
+                    <span class="comment"># División entera</span>
+                    display.scroll(<span class="string">"20 / 6"</span>)
+                    display.show(<span class="number">20</span> // <span class="number">6</span>)
+                    <span class="comment"># Mostrará: 3</span>
+                    sleep(<span class="number">2000</span>)
+
+                    <span class="comment"># Potencia</span>
+                    display.scroll(<span class="string">"2^4"</span>)
+                    display.show(<span class="number">2</span> ** <span class="number">4</span>)
+                    <span class="comment"># Mostrará: 16</span>
+                </div>
+
+                <p style="margin-top: 1.5rem;"><strong>Ejemplo 3: Usando sensores</strong></p>
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># Convertir temperatura de Celsius a Fahrenheit</span>
+                    <span class="comment"># Fórmula: (C * 9/5) + 32</span>
+
+                    celsius = temperature()
+                    fahrenheit = (celsius * <span class="number">9</span> // <span class="number">5</span>) + <span
+                        class="number">32</span>
+
+                    display.scroll(<span class="string">"Temp C:"</span>)
+                    display.show(celsius)
+                    sleep(<span class="number">1500</span>)
+
+                    display.scroll(<span class="string">"Temp F:"</span>)
+                    display.show(fahrenheit)
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Orden de Operaciones</h4>
+                    <p>
+                        Python sigue las reglas matemáticas que conoces: primero potencias, luego multiplicaciones
+                        y divisiones, y finalmente sumas y restas. Puedes usar paréntesis <code>()</code> para
+                        cambiar el orden.
+                    </p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎯 Tu Reto</h2>
+
+                <div class="challenge-box">
+                    <h3><span class="emoji">🧮</span> ¡Crea una calculadora micro:bit!</h3>
+                    <p><strong>Objetivo:</strong> Crear un programa que realice y muestre diferentes cálculos
+                        matemáticos.</p>
+
+                    <h4 style="margin-top: 1.5rem; color: #22543d;">Parte 1 - Requisitos básicos:</h4>
+                    <ul>
+                        <li>Calcula cuántas horas hay en una semana (7 días × 24 horas)</li>
+                        <li>Calcula cuántos segundos hay en un minuto × cuántos minutos hay en una hora</li>
+                        <li>Si tienes 100 caramelos y los repartes entre 7 amigos, ¿cuántos le tocan a cada uno?
+                            (división entera)</li>
+                        <li>¿Cuántos caramelos sobran? (usa el operador módulo %)</li>
+                    </ul>
+
+                    <h4 style="margin-top: 1.5rem; color: #22543d;">Parte 2 - Bonus con sensores:</h4>
+                    <ul>
+                        <li>Lee el nivel de luz con <code>display.read_light_level()</code> y calcula su porcentaje (el
+                            valor máximo es 255)</li>
+                        <li>Calcula el doble de la temperatura actual</li>
+                        <li>Crea un contador que sume 1 cada vez que presiones el botón A</li>
+                    </ul>
+
+                    <h4 style="margin-top: 1.5rem; color: #22543d;">Parte 3 - Desafío extra:</h4>
+                    <ul>
+                        <li>Crea un programa que calcule tu edad en días (edad en años × 365)</li>
+                        <li>Calcula cuántos años tiene tu mascota en "años humanos" (edad × 7 para perros)</li>
+                        <li>Experimenta con potencias: calcula 2^1, 2^2, 2^3, 2^4, etc.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔍 Ejemplo de Solución</h2>
+                <p>Un ejemplo para la Parte 1:</p>
+
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># Calculadora micro:bit</span>
+
+                    <span class="comment"># Horas en una semana</span>
+                    display.scroll(<span class="string">"Horas/semana:"</span>)
+                    display.show(<span class="number">7</span> * <span class="number">24</span>)
+                    sleep(<span class="number">2000</span>)
+
+                    <span class="comment"># Segundos en una hora</span>
+                    display.scroll(<span class="string">"Seg/hora:"</span>)
+                    display.show(<span class="number">60</span> * <span class="number">60</span>)
+                    sleep(<span class="number">2000</span>)
+
+                    <span class="comment"># Repartir caramelos</span>
+                    display.scroll(<span class="string">"100/7="</span>)
+                    display.show(<span class="number">100</span> // <span class="number">7</span>)
+                    sleep(<span class="number">2000</span>)
+
+                    display.scroll(<span class="string">"Sobran:"</span>)
+                    display.show(<span class="number">100</span> % <span class="number">7</span>)
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔗 Recursos</h2>
+                <a href="https://python.microbit.org/" target="_blank" class="link-button">
+                    🖥️ Abrir Editor de micro:bit Python
+                </a>
+            </div>
+
+            <div class="tip-box">
+                <h4>🎓 Para pensar...</h4>
+                <p>
+                    El operador módulo (%) es muy útil en robótica. Por ejemplo, si quieres que algo se repita
+                    cada 10 ciclos, puedes usar <code>contador % 10 == 0</code>. También sirve para saber si un
+                    número es par: <code>numero % 2 == 0</code>.
+                </p>
+            </div>
+        </div>
+
+        <footer>
+            <p>💻 Retos Python micro:bit - Módulo 1 | ¡Ya eres un matemático! 🧮</p>
+        </footer>
+    </div>
+</body>
+
+</html>
