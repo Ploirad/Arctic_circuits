@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reto 2: Mostrando Datos - micro:bit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 2.5rem;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            color: #667eea;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #4facfe;
+            display: inline-block;
+        }
+
+        .concept-box {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .concept-box h3 {
+            color: #4a5568;
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+        }
+
+        .concept-box p {
+            line-height: 1.7;
+            color: #2d3748;
+        }
+
+        .challenge-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #f5576c;
+        }
+
+        .challenge-box h3 {
+            color: #c53030;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .challenge-box ul {
+            margin-left: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .challenge-box li {
+            margin: 0.8rem 0;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #68d391;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .code-block .comment {
+            color: #a0aec0;
+        }
+
+        .code-block .keyword {
+            color: #fc8181;
+        }
+
+        .code-block .string {
+            color: #fbd38d;
+        }
+
+        .code-block .number {
+            color: #90cdf4;
+        }
+
+        .tip-box {
+            background: #c6f6d5;
+            border-left: 5px solid #48bb78;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .tip-box h4 {
+            color: #2f855a;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .warning-box {
+            background: #fed7d7;
+            border-left: 5px solid #fc8181;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box h4 {
+            color: #c53030;
+            margin-bottom: 0.5rem;
+        }
+
+        .link-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .link-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .emoji {
+            font-size: 1.5rem;
+        }
+
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Reto 2: Mostrando Datos</h1>
+            <p class="subtitle">Módulo 1: Introducción a Python y Programación</p>
+            <span class="badge">Sección 1.2 - Display y Salida de Datos</span>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2>📚 Conceptos Clave</h2>
+
+                <div class="concept-box">
+                    <h3>La función display.show()</h3>
+                    <p>
+                        <code>display.show()</code> es la función principal para mostrar información en el micro:bit.
+                        Puede mostrar texto, números, e incluso imágenes predefinidas. Es equivalente a la función
+                        <code>print()</code> de Python estándar, pero visualiza en la matriz LED 5x5.
+                    </p>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Mostrando texto vs números</h3>
+                    <p>
+                        Puedes mostrar tanto texto (strings) como números. El texto va entre comillas ("" o ''),
+                        mientras que los números no necesitan comillas.
+                    </p>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Imágenes predefinidas</h3>
+                    <p>
+                        El micro:bit tiene muchas imágenes incorporadas como <code>Image.HAPPY</code>,
+                        <code>Image.HEART</code>, <code>Image.SAD</code>, etc. Son perfectas para crear
+                        programas expresivos.
+                    </p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💡 Ejemplos</h2>
+
+                <p><strong>Ejemplo 1: Mostrar texto</strong></p>
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># Mostrar un mensaje</span>
+                    display.show(<span class="string">"Python"</span>)
+                </div>
+
+                <p style="margin-top: 1.5rem;"><strong>Ejemplo 2: Mostrar números</strong></p>
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># Mostrar un número</span>
+                    display.show(<span class="number">42</span>)
+                </div>
+
+                <p style="margin-top: 1.5rem;"><strong>Ejemplo 3: Mostrar imágenes</strong></p>
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># Mostrar una carita feliz</span>
+                    display.show(Image.HAPPY)
+                </div>
+
+                <p style="margin-top: 1.5rem;"><strong>Ejemplo 4: Mostrar varias cosas con scroll</strong></p>
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># El texto largo se desplaza automáticamente</span>
+                    display.scroll(<span class="string">"Hola, bienvenido al mundo de Python!"</span>)
+                </div>
+
+                <div class="tip-box">
+                    <h4>💡 Diferencia entre show() y scroll()</h4>
+                    <ul>
+                        <li><code>show()</code> - Muestra el contenido de forma estática (o letra por letra si es texto)
+                        </li>
+                        <li><code>scroll()</code> - Desplaza el contenido de derecha a izquierda continuamente</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎯 Tu Reto</h2>
+
+                <div class="challenge-box">
+                    <h3><span class="emoji">🎨</span> Crea un programa de presentación</h3>
+                    <p><strong>Objetivo:</strong> Crear un programa que muestre diferentes tipos de información sobre
+                        ti.</p>
+
+                    <h4 style="margin-top: 1.5rem; color: #744210;">Requisitos mínimos:</h4>
+                    <ul>
+                        <li>Mostrar tu nombre usando <code>display.scroll()</code></li>
+                        <li>Mostrar tu edad usando <code>display.show()</code> con un número</li>
+                        <li>Mostrar una imagen que te represente (ej: <code>Image.HAPPY</code>)</li>
+                        <li>Usa <code>sleep()</code> para hacer pausas entre cada elemento (ej: <code>sleep(1000)</code>
+                            para 1 segundo)</li>
+                    </ul>
+
+                    <h4 style="margin-top: 1.5rem; color: #744210;">Bonus (opcional):</h4>
+                    <ul>
+                        <li>Muestra una secuencia de imágenes (como una animación simple)</li>
+                        <li>Combina texto y números en un solo mensaje</li>
+                        <li>Investiga cómo usar <code>display.clear()</code> para limpiar la pantalla</li>
+                        <li>Haz que el programa se repita en bucle infinito con <code>while True:</code></li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>⚠️ Importante</h4>
+                    <p>
+                        Si usas <code>while True:</code> para hacer un bucle infinito, recuerda agregar pausas con
+                        <code>sleep()</code> entre cada ciclo. De lo contrario, el programa será muy rápido
+                        y no verás bien lo que muestra.
+                    </p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔍 Ejemplo de Solución</h2>
+                <p>Aquí tienes una posible solución (¡intenta hacerla tú primero!):</p>
+
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># Programa de presentación</span>
+                    display.scroll(<span class="string">"Hola soy"</span>)
+                    display.scroll(<span class="string">"Juan"</span>)
+                    sleep(<span class="number">500</span>)
+
+                    display.scroll(<span class="string">"Tengo"</span>)
+                    display.show(<span class="number">12</span>)
+                    sleep(<span class="number">1000</span>)
+
+                    display.show(Image.HAPPY)
+                    sleep(<span class="number">2000</span>)
+
+                    display.clear()
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔗 Recursos</h2>
+                <p>Todo lo que necesitas para completar este reto:</p>
+                <a href="https://python.microbit.org/" target="_blank" class="link-button">
+                    🖥️ Abrir Editor de micro:bit Python
+                </a>
+            </div>
+
+            <div class="tip-box">
+                <h4>📌 Lista de Imágenes Disponibles</h4>
+                <p>
+                    <code>Image.HEART</code>, <code>Image.HAPPY</code>, <code>Image.SAD</code>,
+                    <code>Image.CONFUSED</code>, <code>Image.ANGRY</code>, <code>Image.ASLEEP</code>,
+                    <code>Image.SURPRISED</code>, <code>Image.SILLY</code>, <code>Image.YES</code>,
+                    <code>Image.NO</code>, y muchas más!
+                </p>
+            </div>
+        </div>
+
+        <footer>
+            <p>💻 Retos Python micro:bit - Módulo 1 | ¡Sigue experimentando! 🚀</p>
+        </footer>
+    </div>
+</body>
+
+</html>

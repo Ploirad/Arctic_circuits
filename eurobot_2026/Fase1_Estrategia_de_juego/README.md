@@ -11,15 +11,23 @@ En este documento, el equipo debe describir resumidamente la estrategia general 
 2. Termometro
 3. Cajas de bellotas
 
+### SIMAS
+1. Hora de comer (3 SIMAs).
+2. SIMA ninja (opcional).
+3. Hora de comer (5 SIMAs).
+
 ## 2. Robots a Crear
 *(Indicad cuáles de los siguientes robots vais a construir y por qué)*
 - Robot Principal (Madre): SÍ
-- Sima Ninja: [SÍ/NO]
-- Simas Obreras (¿Cuántas?): [0-6]
+- Sima Ninja: NO (provisional)
+- Simas Obreras: Vamos a empezar por 3 SIMAs y si van muy bien ya haremos hasta un total de 5.
 
 ## 3. Acciones a Acometer
 *(Listad qué acciones específicas de la normativa vais a intentar completar y cuáles descartáis)*
 - Acción 1: Vuelta a casa
-- Acción 2: Termometro
-- Acción 3: Cajas de bellotas
+- Acción 1: Termometro
+- Acción 1: Hora de Comer
+- Acción 2: Cajas de bellotas
+- Acción 2: Encontrar es conservar (SIMA ninja)
+
 
