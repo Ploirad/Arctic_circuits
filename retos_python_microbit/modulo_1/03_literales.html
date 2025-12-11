@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reto 3: Literales - micro:bit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 2.5rem;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            color: #d53f8c;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #fa709a;
+            display: inline-block;
+        }
+
+        .concept-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #e17055;
+        }
+
+        .concept-box h3 {
+            color: #744210;
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+        }
+
+        .concept-box p {
+            line-height: 1.7;
+            color: #2d3748;
+        }
+
+        .types-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .type-card {
+            background: white;
+            padding: 1.2rem;
+            border-radius: 10px;
+            border: 3px solid #fed7d7;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .type-card:hover {
+            transform: translateY(-5px);
+            border-color: #fc8181;
+        }
+
+        .type-card h4 {
+            color: #c53030;
+            margin-bottom: 0.5rem;
+        }
+
+        .challenge-box {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #48bb78;
+        }
+
+        .challenge-box h3 {
+            color: #22543d;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .challenge-box ul {
+            margin-left: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .challenge-box li {
+            margin: 0.8rem 0;
+            line-height: 1.6;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #68d391;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .code-block .comment {
+            color: #a0aec0;
+        }
+
+        .code-block .keyword {
+            color: #fc8181;
+        }
+
+        .code-block .string {
+            color: #fbd38d;
+        }
+
+        .code-block .number {
+            color: #90cdf4;
+        }
+
+        .code-block .boolean {
+            color: #d6bcfa;
+        }
+
+        .tip-box {
+            background: #bee3f8;
+            border-left: 5px solid #3182ce;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .tip-box h4 {
+            color: #2c5282;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .link-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(250, 112, 154, 0.4);
+        }
+
+        .link-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(250, 112, 154, 0.6);
+        }
+
+        .emoji {
+            font-size: 1.5rem;
+        }
+
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔢 Reto 3: Literales y Datos</h1>
+            <p class="subtitle">Módulo 1: Introducción a Python y Programación</p>
+            <span class="badge">Sección 1.3 - Tipos de Datos</span>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2>📚 Conceptos Clave</h2>
+
+                <div class="concept-box">
+                    <h3>¿Qué son los literales?</h3>
+                    <p>
+                        Los <strong>literales</strong> son valores fijos que escribes directamente en tu código.
+                        Son datos "literales" - exactamente lo que ves es lo que obtienes. Por ejemplo, el número
+                        <code>5</code> o el texto <code>"Hola"</code> son literales.
+                    </p>
+                </div>
+
+                <div class="concept-box">
+                    <h3>Datos vs Literales</h3>
+                    <p>
+                        Imagina que los datos son como ingredientes en la cocina. Los literales son cuando escribes
+                        directamente "2 huevos" o "100 gramos de harina" en tu receta (código). Son valores concretos
+                        que no cambian.
+                    </p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎨 Tipos de Literales en Python</h2>
+
+                <div class="types-grid">
+                    <div class="type-card">
+                        <h4>📝 Strings (Texto)</h4>
+                        <p>Cadenas de caracteres entre comillas</p>
+                        <div class="code-block" style="margin-top: 0.5rem;">
+                            <span class="string">"Hola micro:bit"</span>
+                            <span class="string">'Python'</span>
+                        </div>
+                    </div>
+
+                    <div class="type-card">
+                        <h4>🔢 Integers (Enteros)</h4>
+                        <p>Números sin decimales</p>
+                        <div class="code-block" style="margin-top: 0.5rem;">
+                            <span class="number">42</span>
+                            <span class="number">-15</span>
+                            <span class="number">0</span>
+                        </div>
+                    </div>
+
+                    <div class="type-card">
+                        <h4>💧 Floats (Decimales)</h4>
+                        <p>Números con punto decimal</p>
+                        <div class="code-block" style="margin-top: 0.5rem;">
+                            <span class="number">3.14</span>
+                            <span class="number">-0.5</span>
+                            <span class="number">2.0</span>
+                        </div>
+                    </div>
+
+                    <div class="type-card">
+                        <h4>✅ Booleans (Lógicos)</h4>
+                        <p>Verdadero o Falso</p>
+                        <div class="code-block" style="margin-top: 0.5rem;">
+                            <span class="boolean">True</span>
+                            <span class="boolean">False</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>💡 Ejemplos con micro:bit</h2>
+
+                <p><strong>Ejemplo 1: Literales de texto (strings)</strong></p>
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># Estos son literales de tipo string</span>
+                    display.scroll(<span class="string">"Python"</span>)
+                    display.scroll(<span class="string">'micro:bit'</span>)
+                    display.scroll(<span class="string">"¡Hola Mundo!"</span>)
+                </div>
+
+                <p style="margin-top: 1.5rem;"><strong>Ejemplo 2: Literales numéricos</strong></p>
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># Literales enteros</span>
+                    display.show(<span class="number">100</span>)
+                    sleep(<span class="number">1000</span>)
+
+                    <span class="comment"># También puedes mostrar negativos</span>
+                    display.show(<span class="number">-5</span>)
+                    sleep(<span class="number">1000</span>)
+
+                    <span class="comment"># Y el cero</span>
+                    display.show(<span class="number">0</span>)
+                </div>
+
+                <p style="margin-top: 1.5rem;"><strong>Ejemplo 3: Combinando diferentes tipos</strong></p>
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># Mostrar una cuenta regresiva</span>
+                    display.show(<span class="number">3</span>)
+                    sleep(<span class="number">1000</span>)
+                    display.show(<span class="number">2</span>)
+                    sleep(<span class="number">1000</span>)
+                    display.show(<span class="number">1</span>)
+                    sleep(<span class="number">1000</span>)
+                    display.scroll(<span class="string">"GO!"</span>)
+                </div>
+
+                <div class="tip-box">
+                    <h4>💡 Nota Importante</h4>
+                    <p>
+                        Cuando escribes <code>"5"</code> (con comillas) es un string (texto), pero cuando escribes
+                        <code>5</code> (sin comillas) es un número. ¡Son cosas diferentes! Los números puedes usarlos
+                        para hacer matemáticas, el texto no.
+                    </p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎯 Tu Reto</h2>
+
+                <div class="challenge-box">
+                    <h3><span class="emoji">🎪</span> ¡Crea un programa de información!</h3>
+                    <p><strong>Objetivo:</strong> Crear un programa que muestre diferentes tipos de literales.</p>
+
+                    <h4 style="margin-top: 1.5rem; color: #22543d;">Requisitos:</h4>
+                    <ul>
+                        <li>Muestra tu nombre (literal string)</li>
+                        <li>Muestra tu edad (literal numérico)</li>
+                        <li>Muestra cuántas mascotas tienes (literal numérico, puede ser 0)</li>
+                        <li>Muestra tu comida favorita (literal string)</li>
+                        <li>Usa <code>sleep()</code> entre cada dato para que se vea bien</li>
+                    </ul>
+
+                    <h4 style="margin-top: 1.5rem; color: #22543d;">Bonus (opcional):</h4>
+                    <ul>
+                        <li>Crea una calculadora simple que muestre el resultado de operaciones como <code>10 + 5</code>
+                        </li>
+                        <li>Muestra tu altura en centímetros (usa un decimal, por ejemplo <code>152.5</code>)</li>
+                        <li>Crea una secuencia que combine strings, números e imágenes</li>
+                        <li>Intenta mostrar la temperatura actual usando <code>temperature()</code></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔍 Ejemplo de Solución</h2>
+                <p>Aquí tienes un ejemplo (¡intenta el tuyo primero!):</p>
+
+                <div class="code-block">
+                    <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                    <span class="comment"># Mi información personal usando literales</span>
+
+                    display.scroll(<span class="string">"Nombre:"</span>)
+                    display.scroll(<span class="string">"Ana"</span>)
+                    sleep(<span class="number">1000</span>)
+
+                    display.scroll(<span class="string">"Edad:"</span>)
+                    display.show(<span class="number">13</span>)
+                    sleep(<span class="number">1500</span>)
+
+                    display.scroll(<span class="string">"Mascotas:"</span>)
+                    display.show(<span class="number">2</span>)
+                    sleep(<span class="number">1500</span>)
+
+                    display.scroll(<span class="string">"Comida:"</span>)
+                    display.scroll(<span class="string">"Pizza"</span>)
+
+                    <span class="comment"># Bonus: mostrar la temperatura</span>
+                    display.scroll(<span class="string">"Temp:"</span>)
+                    display.show(temperature())
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔗 Recursos</h2>
+                <a href="https://python.microbit.org/" target="_blank" class="link-button">
+                    🖥️ Abrir Editor de micro:bit Python
+                </a>
+            </div>
+
+            <div class="tip-box">
+                <h4>🎓 ¿Sabías que...?</h4>
+                <p>
+                    El micro:bit puede detectar su temperatura interna usando <code>temperature()</code>.
+                    Esto NO es un literal (porque cambia), pero puedes combinarlo con literales en tu programa.
+                    También puede leer el nivel de luz con <code>display.read_light_level()</code>!
+                </p>
+            </div>
+        </div>
+
+        <footer>
+            <p>💻 Retos Python micro:bit - Módulo 1 | ¡Cada vez mejor! 🌟</p>
+        </footer>
+    </div>
+</body>
+
+</html>
