@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 1.5: Programando desde Antigravity - micro:bit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1e3a5f 0%, #0d7377 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 2.5rem;
+        }
+
+        .intro {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            color: #4a5568;
+        }
+
+        .session-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .session-card {
+            display: flex;
+            align-items: stretch;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .session-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .session-number {
+            width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .session-1 .session-number {
+            background: linear-gradient(135deg, #0078d4, #00a8e8);
+        }
+
+        .session-2 .session-number {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+        }
+
+        .session-3 .session-number {
+            background: linear-gradient(135deg, #6c5ce7, #a29bfe);
+        }
+
+        .session-content {
+            flex: 1;
+            padding: 1.5rem;
+        }
+
+        .session-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #2d3748;
+        }
+
+        .session-content p {
+            color: #718096;
+            line-height: 1.6;
+        }
+
+        .session-arrow {
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            color: #a0aec0;
+            font-size: 1.5rem;
+        }
+
+        .prereq-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            border-left: 5px solid #ed8936;
+        }
+
+        .prereq-box h3 {
+            color: #c05621;
+            margin-bottom: 0.8rem;
+        }
+
+        .prereq-box ul {
+            margin-left: 1.5rem;
+            color: #744210;
+        }
+
+        .prereq-box li {
+            margin: 0.5rem 0;
+        }
+
+        .nav-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 2rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-back:hover {
+            color: #764ba2;
+        }
+
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💻 Módulo 1.5</h1>
+            <p class="subtitle">Programando micro:bit desde Antigravity</p>
+            <span class="badge">Editor con IA integrada</span>
+        </div>
+
+        <div class="content">
+            <p class="intro">
+                En este módulo aprenderás a programar tu micro:bit usando <strong>Antigravity</strong>,
+                un editor de código de Google basado en Visual Studio Code pero con <strong>inteligencia artificial
+                    integrada</strong>.
+                También aprenderás a flashear programas desde la <strong>línea de comandos</strong>. 🚀
+            </p>
+
+            <div class="prereq-box">
+                <h3>📋 Antes de empezar necesitas:</h3>
+                <ul>
+                    <li>Una micro:bit (v1 o v2)</li>
+                    <li>Un cable USB</li>
+                    <li>Un ordenador (Windows, Mac o Linux)</li>
+                    <li>Conexión a internet (para descargar VS Code)</li>
+                </ul>
+            </div>
+
+            <h2 style="margin-bottom: 1.5rem; color: #2d3748;">📚 Sesiones</h2>
+
+            <div class="session-list">
+                <a href="01_configurar_vscode.html" class="session-card session-1">
+                    <div class="session-number">1</div>
+                    <div class="session-content">
+                        <h3>⚙️ Configurar Antigravity</h3>
+                        <p>Qué es Antigravity, instalación y configuración de la extensión micro:bit.</p>
+                    </div>
+                    <div class="session-arrow">→</div>
+                </a>
+
+                <a href="02_primer_programa_vscode.html" class="session-card session-2">
+                    <div class="session-number">2</div>
+                    <div class="session-content">
+                        <h3>🚀 Tu Primer Programa desde Antigravity</h3>
+                        <p>Abrir el proyecto de ejemplo, entender el código y flashear a la micro:bit.</p>
+                    </div>
+                    <div class="session-arrow">→</div>
+                </a>
+
+                <a href="03_linea_comandos.html" class="session-card session-3">
+                    <div class="session-number">3</div>
+                    <div class="session-content">
+                        <h3>💻 Flasheando desde Línea de Comandos</h3>
+                        <p>Usar uflash y la terminal para flashear programas como un profesional.</p>
+                    </div>
+                    <div class="session-arrow">→</div>
+                </a>
+            </div>
+
+            <a href="../README.md" class="nav-back">← Volver al curso principal</a>
+        </div>
+
+        <footer>
+            <p>💻 Retos Python micro:bit - Módulo 1.5 | ¡A programar! 🚀</p>
+        </footer>
+    </div>
+</body>
+
+</html>
