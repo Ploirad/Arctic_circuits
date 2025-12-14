@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sesión 1: Configurar Antigravity - micro:bit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1e3a5f 0%, #0d7377 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 2.5rem;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            color: #4285f4;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #34a853;
+            display: inline-block;
+        }
+
+        .step-box {
+            background: linear-gradient(135deg, #e8f4fd 0%, #d0e8f8 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #4285f4;
+        }
+
+        .step-box h3 {
+            color: #1e3a5f;
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .step-number {
+            background: #4285f4;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .step-box p,
+        .step-box ul,
+        .step-box ol {
+            line-height: 1.7;
+            color: #2d3748;
+        }
+
+        .step-box ul,
+        .step-box ol {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .step-box li {
+            margin: 0.5rem 0;
+        }
+
+        .menu-path {
+            background: #2d3748;
+            color: #68d391;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .keyboard-shortcut {
+            background: #4a5568;
+            color: #fbd38d;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            border: 1px solid #718096;
+        }
+
+        .tip-box {
+            background: #c6f6d5;
+            border-left: 5px solid #48bb78;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .tip-box h4 {
+            color: #2f855a;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .warning-box {
+            background: #feebc8;
+            border-left: 5px solid #ed8936;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box h4 {
+            color: #c05621;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-box {
+            background: #bee3f8;
+            border-left: 5px solid #3182ce;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .info-box h4 {
+            color: #2b6cb0;
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+        }
+
+        .highlight-box h4 {
+            margin-bottom: 0.8rem;
+        }
+
+        .link-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1rem;
+            margin-right: 0.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4);
+        }
+
+        .link-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(66, 133, 244, 0.6);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2.5rem;
+            background: #f7fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .nav-link {
+            color: #4285f4;
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #34a853;
+        }
+
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Sesión 1: Configurar Antigravity</h1>
+            <p class="subtitle">Módulo 1.5: Programando desde Antigravity</p>
+            <span class="badge">Tu editor con IA integrada</span>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2>🎯 Objetivo de esta sesión</h2>
+                <p>
+                    Vamos a configurar <strong>Antigravity</strong> para programar tu micro:bit usando MicroPython.
+                    Al terminar esta sesión, tendrás todo listo para escribir y ejecutar programas en tu placa.
+                </p>
+            </div>
+
+            <div class="section">
+                <h2>🤖 ¿Qué es Antigravity?</h2>
+
+                <div class="highlight-box">
+                    <h4>✨ Un editor de código con superpoderes</h4>
+                    <p>
+                        <strong>Antigravity</strong> es un editor de código creado por Google, basado en Visual Studio
+                        Code.
+                        Es como VS Code, pero con <strong>inteligencia artificial integrada</strong> que te ayuda a
+                        programar.
+                    </p>
+                </div>
+
+                <div class="info-box">
+                    <h4>🎁 ¿Por qué usamos Antigravity?</h4>
+                    <ul>
+                        <li><strong>Familiar:</strong> Si conoces VS Code, ya conoces Antigravity</li>
+                        <li><strong>IA integrada:</strong> Un asistente de IA te ayuda mientras programas</li>
+                        <li><strong>Extensiones fáciles:</strong> Usa el repositorio Open VSX, donde está la extensión
+                            de micro:bit</li>
+                        <li><strong>Gratis:</strong> Disponible para Windows, Mac y Linux</li>
+                        <li><strong>Futuro:</strong> La IA te ayudará cada vez más en tus proyectos de robótica</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📥 Paso 1: Instalar los programas necesarios</h2>
+
+                <div class="step-box">
+                    <h3><span class="step-number">1</span> Instalar Python 3</h3>
+                    <p>La extensión de micro:bit necesita Python instalado en tu ordenador.</p>
+                    <ul>
+                        <li>Ve a: <a href="https://www.python.org/downloads/" target="_blank"
+                                style="color: #4285f4; font-weight: bold;">python.org/downloads</a></li>
+                        <li>Descarga la última versión de Python 3</li>
+                        <li><strong>¡Importante!</strong> Durante la instalación, marca la casilla <strong>"Add Python
+                                to PATH"</strong></li>
+                    </ul>
+
+                    <div class="tip-box">
+                        <h4>💡 ¿Ya tienes Python?</h4>
+                        <p>Puedes verificarlo abriendo una terminal y escribiendo: <code>python --version</code></p>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3><span class="step-number">2</span> Descargar Antigravity</h3>
+                    <p>Abre tu navegador y ve a la web oficial de Antigravity:</p>
+
+                    <a href="https://antigravity.google" target="_blank" class="link-button">
+                        🌐 Ir a antigravity.google
+                    </a>
+
+                    <p style="margin-top: 1rem;">Haz clic en el botón de descarga. La web detectará automáticamente tu
+                        sistema operativo.</p>
+                </div>
+
+                <div class="step-box">
+                    <h3><span class="step-number">3</span> Instalar Antigravity</h3>
+                    <ul>
+                        <li><strong>Windows:</strong> Ejecuta el archivo <code>.exe</code> descargado y sigue el
+                            asistente</li>
+                        <li><strong>Linux:</strong> Sigue las instrucciones de la web para tu distribución</li>
+                        <li><strong>Mac:</strong> Arrastra Antigravity a la carpeta Aplicaciones</li>
+                    </ul>
+
+                    <div class="tip-box">
+                        <h4>💡 Es igual que VS Code</h4>
+                        <p>Si ya has usado Visual Studio Code antes, Antigravity te resultará muy familiar. Los menús,
+                            atajos de teclado y funcionamiento son prácticamente idénticos.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🧩 Paso 2: Instalar la extensión micro:bit Python</h2>
+
+                <div class="info-box">
+                    <h4>ℹ️ ¡Buenas noticias!</h4>
+                    <p>Antigravity usa el repositorio <strong>Open VSX</strong> por defecto, así que la extensión
+                        <strong>micro:bit Python</strong> de MAKinteract está disponible directamente desde el panel de
+                        extensiones.
+                    </p>
+                </div>
+
+                <div class="step-box">
+                    <h3><span class="step-number">4</span> Abrir el panel de extensiones</h3>
+                    <p>En Antigravity, tienes <strong>3 formas</strong> de abrir el panel de extensiones:</p>
+                    <ul>
+                        <li><strong>Opción A - Menú:</strong> <span class="menu-path">Ver → Extensiones</span></li>
+                        <li><strong>Opción B - Atajo de teclado:</strong> <span class="keyboard-shortcut">Ctrl + Shift +
+                                X</span></li>
+                        <li><strong>Opción C - Icono:</strong> Haz clic en el icono de cuadrados en la barra lateral
+                            izquierda</li>
+                    </ul>
+                </div>
+
+                <div class="step-box">
+                    <h3><span class="step-number">5</span> Buscar e instalar la extensión</h3>
+                    <p>En el cuadro de búsqueda del panel de extensiones:</p>
+                    <ol>
+                        <li>Escribe: <code>micro:bit</code></li>
+                        <li>Busca la extensión <strong>"micro:bit Python"</strong> de <strong>makinteract</strong></li>
+                        <li>Haz clic en el botón azul <strong>"Install"</strong></li>
+                    </ol>
+
+                    <div class="tip-box">
+                        <h4>💡 ¡Sin complicaciones!</h4>
+                        <p>A diferencia de VS Code normal, en Antigravity no necesitas configurar nada especial.
+                            La extensión aparece directamente porque usa Open VSX.</p>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3><span class="step-number">6</span> Esperar a que termine la instalación</h3>
+                    <p>La instalación tarda unos segundos. Cuando termine:</p>
+                    <ul>
+                        <li>El botón cambiará a <strong>"Disable"</strong> o <strong>"Uninstall"</strong></li>
+                        <li>Puede que te pida reiniciar Antigravity - hazlo si te lo pide</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔌 Paso 3: Conectar tu micro:bit</h2>
+
+                <div class="step-box">
+                    <h3><span class="step-number">7</span> Conectar el cable USB</h3>
+                    <p>Conecta tu micro:bit al ordenador usando el cable USB. El conector micro-USB va en la parte
+                        superior de la placa.</p>
+
+                    <div class="tip-box">
+                        <h4>💡 ¿Cómo sé que está conectado?</h4>
+                        <p>Cuando conectas la micro:bit, debería aparecer como una <strong>unidad USB</strong> en tu
+                            ordenador (como si fuera un pendrive). En Windows aparecerá como <code>MICROBIT (D:)</code>
+                            o similar.</p>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Usa un cable de datos</h4>
+                        <p>Asegúrate de usar un cable USB que transmita datos, no solo de carga. Si la micro:bit no
+                            aparece como unidad, prueba con otro cable.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>✅ ¡Comprobación Final!</h2>
+
+                <div class="step-box"
+                    style="background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%); border-left-color: #48bb78;">
+                    <h3>🎉 Tu entorno está listo si...</h3>
+                    <ul>
+                        <li>✅ Python 3 está instalado (<code>python --version</code> funciona en terminal)</li>
+                        <li>✅ Antigravity está instalado y abierto</li>
+                        <li>✅ La extensión "micro:bit Python" de makinteract está instalada</li>
+                        <li>✅ Tu micro:bit aparece como unidad USB cuando lo conectas</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <h4>📌 Resumen de atajos importantes</h4>
+                <ul>
+                    <li><span class="keyboard-shortcut">Ctrl + Shift + X</span> → Abrir panel de Extensiones</li>
+                    <li><span class="keyboard-shortcut">Ctrl + Shift + P</span> → Abrir Paleta de Comandos</li>
+                    <li><span class="keyboard-shortcut">Ctrl + S</span> → Guardar archivo</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="index.html" class="nav-link">← Volver al índice</a>
+            <a href="02_primer_programa_vscode.html" class="nav-link">Siguiente: Tu primer programa →</a>
+        </div>
+
+        <footer>
+            <p>💻 Retos Python micro:bit - Módulo 1.5 | ¡Sigue adelante! 🚀</p>
+        </footer>
+    </div>
+</body>
+
+</html>
