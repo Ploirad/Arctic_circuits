@@ -1,3 +1,4 @@
+from microbit import *
 from dfrobot_motor import *
 
 driver = DFRobot0548()
