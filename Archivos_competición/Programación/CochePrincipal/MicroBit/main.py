@@ -8,78 +8,88 @@ ESP32_ADDRESS = 0x42
 i2c_master = I2C_MASTER()
 
 Robot = OmniRobot()
-servoSujector = Servo(Servos.S1)
+cursorServo = Servo(Servos.S1)
 
 #moves = [Directions.Stop, Directions.Ahead, Directions.Backwards, Directions.Left, Directions.Right, Directions.Left_Ahead, Directions.Right_Ahead, Directions.Left_Backwards, Directions.Right_Backwards, Directions.CW, Directions.CCW]
 PrincipalRadio = Radio(47, 7)
-datas = [0, 0, 0, 0, 0]
 
-def coordToDirection(x: float, y: float, ratio=30):
-    n = ratio
-    if x >= 850:
-        if y >= 850:
-            return Directions.Right_Ahead
-        elif y <= 500:
-            return Directions.Right_Backwards
-        else:
-            return Directions.Right
-    elif x <= 500:
-        if y >= 850:
-            return Directions.Left_Ahead
-        elif y <= 500:
-            return Directions.Left_Backwards
-        else:
-            return Directions.Left
+def dataToDirection(d: int):
+    if d == 0:
+        return Directions.Stop
+    elif d == 1:
+        return Directions.Ahead
+    elif d == 2:
+        return Directions.Backwards
+    elif d == 3:
+        return Directions.Left
+    elif d == 4:
+        return Directions.Right
+    elif d == 5:
+        return Directions.Left_Ahead
+    elif d == 6:
+        return Directions.Right_Ahead
+    elif d == 7:
+        return Directions.Left_Backwards
+    elif d == 8:
+        return Directions.Right_Backwards
     else:
-        if y >= 850:
-            return Directions.Ahead
-        elif y <= 500:
-            return Directions.Backwards
-        else:
-            return Directions.Stop
+        return -1
 
-last_2 = 0
+color = "Yellow"
 last_3 = 0
 last_4 = 0
+last_5 = 0
+last_6 = 0
 while True:
+    #X, Y, TR,TL,C, Cs,S, R       
+    values = []
     data = PrincipalRadio.receive()
-    if data != -1:
-                #X, Y, C, S, R        
-        datas = [0, 0, 0, 0, 0]
-        for n in data.split(","):
-            if n[0] == "[":
-                n = n[1:]
-            if n[-1] == "]":
-                n = n[:-2]
-
-            if "F" in n.upper():
-                datas.append(0)
-            elif "T" in n.upper():
-                datas.append(1)
+    try:
+        if data != -1:
+            for n in data.split(","):
+                if "F" in n.upper():
+                    values.append(0)
+                elif "T" in n.upper():
+                    values.append(1)
+                else:
+                    try:
+                        values.append(int(n))
+                    except:
+                        print(n)
+            print(values, color)
+    
+            if values[1] == 1:
+                Robot.move(Directions.CCW, True)
+            elif values[2] == 1:
+                Robot.move(Directions.CW, True)
             else:
-                try:
-                    datas.append(int(n))
-                except:
-                    print(n)
-        datas = datas[5:]
-        print(datas)
+                direction = dataToDirection(values[0])
+                if direction != -1:
+                    Robot.move(direction, True)
 
-    dir = coordToDirection(datas[0], datas[1])
-    Robot.move(dir, True)
-
-    if last_2 != datas[2]:
-        if datas[2] == 1:
-            servoSujector.move(90)
-        else:
-            servoSujector.move(0)
-
-    if last_3 != datas[3]:
-        i2c_master.write(ESP32_ADDRESS, [datas[3]])
-        last_3 = datas[3]
-
-    if last_4 != datas[4]:
-        if datas[4] == 1:
-            display.scroll("Resetting")
-        last_4 = datas[4]
-
-    # sleep(1000)
+            if last_3 != values[3]:
+                if values[3] == 1:
+                    if color == "Yellow":
+                        color = "Blue"
+                    else:
+                        color = "Yellow"
+                last_3 = values[3]
+        
+            if last_4 != values[4]:
+                i2c_master.write(ESP32_ADDRESS, [values[5], values[4]])
+                last_5 = values[4]
+        
+            if last_5 != values[5]:
+                if values[6] == 1:
+                    cursorServo.move(90)
+                else:
+                    cursorServo.move(0)
+                last_5 = values[5]
+        
+            if last_6 != values[6]:
+                if values[6] == 1:
+                    display.scroll("Resetting")
+                last_6 = values[6]
+    except IndexError:
+        pass
+    # # sleep(1000)
