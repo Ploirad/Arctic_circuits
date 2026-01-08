@@ -2,7 +2,7 @@
 from microbit import *
 from Radio import *
 from button import *
-from joystick import *
+from joystick import joystick
 data = [0,0,"F","F","F","F","F"]
 radio_sys = Radio(47, 7)
 TurnRightButton = button(pin2)
