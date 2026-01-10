@@ -2,7 +2,7 @@ from microbit import *
 from I2C_MASTER import I2C_MASTER
 from OmniRobot import *
 from motorDriver import Servo
-from Radio import Radio
+from radioLib import Radio
 
 ESP32_ADDRESS = 0x42
 i2c_master = I2C_MASTER()
