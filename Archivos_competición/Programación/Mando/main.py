@@ -3,7 +3,7 @@ from microbit import *
 from Radio import *
 from button import *
 from joystick import joystick
-data = [0,0,"F","F","F","F","F"]
+carData = [0,0,"F","F","F","F","F"]
 radio_sys = Radio(47, 7)
 TurnRightButton = button(pin2)
 TurnLeftButton = button(pin8)
@@ -12,6 +12,12 @@ CursorButton = button(pin13)
 SystemButton = button(pin14)
 ResetButton = button(pin15)
 Joystick = joystick(pin0,pin1)
+
+simaData = [0, 0]
+radio_sima = Radio(48, 7)
+
+def listToStr(data):
+    return str(data)[1:-2].replace(" ", "").replace("'", "")
 
 class Directions:
     Stop = 0
@@ -50,14 +56,28 @@ def coordToDirection(x: int, y: int, base=700,ratio=150):
         else:
             return Directions.Stop
 
-# Code in a 'while True:' loop repeats forever
+move = False
+moved = False
+
 while True:
     x,y,_ = Joystick.getValues()
-    data[0] = coordToDirection(x, y, 400, 150)
-    data[1] = TurnLeftButton.getValue()
-    data[2] = TurnRightButton.getValue()
-    data[3] = ColorButton.getValue()
-    data[4] = CursorButton.getValue()
-    data[5] = SystemButton.getValue()
-    data[6] = ResetButton.getValue()
-    radio_sys.send(str(data)[1:-2].replace(" ", "").replace("'", ""))
+
+    carData[0] = coordToDirection(x, y, 400, 150)
+    carData[1] = TurnLeftButton.getValue()
+    carData[2] = TurnRightButton.getValue()
+    carData[3] = ColorButton.getValue()
+    carData[4] = CursorButton.getValue()
+    carData[5] = SystemButton.getValue()
+    carData[6] = ResetButton.getValue()
+    # carData structure to send: "Direction,TurnLeft,TurnRight,Color,Cursor,System,Reset"
+    radio_sys.send(listToStr(carData))
+
+    for data in carData:
+        if not move and not moved and data != 0:
+            move = True
+            moved = True
+
+    simaData[0] = carData[3] # Color
+    simaData[1] = moved # Start the count
+    # simaData structure to send: "Color,Start"
+    radio_sima.send(listToStr(simaData))
