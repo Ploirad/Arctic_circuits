@@ -100,7 +100,7 @@ class WUKONG(object):
         if unit not in ['mm', 'cm', 'inch']:
             raise ValueError("unit error, use 'mm', 'cm', or 'inch'")
 
-        # Configurar pin sin pull-up/pull-down
+        # Configurar pin como salida y ponerlo en bajo
         pin.write_digital(0)
         sleep_us(2)
 
@@ -109,16 +109,18 @@ class WUKONG(object):
         sleep_us(10)
         pin.write_digital(0)
 
-        # Leer tiempo de eco (timeout 25ms para ~4.25m máximo)
-        duration = time_pulse_us(pin, 1, 25000)
+        # Leer tiempo de eco usando read_pulse_us
+        # read_pulse_us(1) mide cuánto tiempo el pin está en HIGH
+        # Timeout implícito en micro:bit es suficiente para ~4m
+        duration = pin.read_pulse_us(1)
 
         # Calcular distancia en centímetros
         # Velocidad del sonido: 340 m/s = 29.4 μs/cm (ida y vuelta)
         # Por lo tanto: distancia_cm = tiempo_μs / 58
         distance_cm = duration / 58
 
-        # Si la distancia es mayor a 400cm, considerar que no hay objeto
-        if distance_cm > 400:
+        # Si la distancia es mayor a 400cm o duration es 0, considerar que no hay objeto
+        if distance_cm > 400 or duration == 0:
             return 0
 
         # Convertir a la unidad solicitada
