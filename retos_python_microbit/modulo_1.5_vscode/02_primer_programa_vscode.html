@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sesión 2: Tu Primer Programa desde Antigravity - micro:bit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1e3a5f 0%, #0d7377 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 2.5rem;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            color: #00b894;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #00cec9;
+            display: inline-block;
+        }
+
+        .step-box {
+            background: linear-gradient(135deg, #e8fdf8 0%, #d0f4ea 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #00b894;
+        }
+
+        .step-box h3 {
+            color: #1e3a5f;
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .step-number {
+            background: #00b894;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .step-box p,
+        .step-box ul,
+        .step-box ol {
+            line-height: 1.7;
+            color: #2d3748;
+        }
+
+        .step-box ul,
+        .step-box ol {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .step-box li {
+            margin: 0.5rem 0;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #68d391;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .code-block .comment {
+            color: #a0aec0;
+        }
+
+        .code-block .keyword {
+            color: #fc8181;
+        }
+
+        .code-block .string {
+            color: #fbd38d;
+        }
+
+        .menu-path {
+            background: #2d3748;
+            color: #68d391;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .keyboard-shortcut {
+            background: #4a5568;
+            color: #fbd38d;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            border: 1px solid #718096;
+        }
+
+        .tip-box {
+            background: #c6f6d5;
+            border-left: 5px solid #48bb78;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .tip-box h4 {
+            color: #2f855a;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .warning-box {
+            background: #feebc8;
+            border-left: 5px solid #ed8936;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box h4 {
+            color: #c05621;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-box {
+            background: #bee3f8;
+            border-left: 5px solid #3182ce;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .info-box h4 {
+            color: #2b6cb0;
+            margin-bottom: 0.5rem;
+        }
+
+        .challenge-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #f5576c;
+        }
+
+        .challenge-box h3 {
+            color: #c53030;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2.5rem;
+            background: #f7fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .nav-link {
+            color: #00b894;
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #00cec9;
+        }
+
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Sesión 2: Tu Primer Programa</h1>
+            <p class="subtitle">Módulo 1.5: Programando desde Antigravity</p>
+            <span class="badge">¡Hora de programar!</span>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2>🎯 Objetivo de esta sesión</h2>
+                <p>
+                    Vamos a crear tu primer programa en Python para la micro:bit, escribirlo en Antigravity,
+                    y flashearlo (cargarlo) a la placa. ¡Verás cómo tu código cobra vida!
+                </p>
+            </div>
+
+            <div class="section">
+                <h2>📁 Paso 1: Abrir el proyecto de ejemplo</h2>
+
+                <div class="info-box">
+                    <h4>📂 Proyecto preparado para ti</h4>
+                    <p>Hemos preparado una carpeta de ejemplo con el archivo <code>main.py</code> ya listo.
+                        Esto te ahorrará tiempo y evitará errores comunes.</p>
+                </div>
+
+                <div class="step-box">
+                    <h3><span class="step-number">1</span> Abrir la carpeta del proyecto</h3>
+                    <p>Abre la carpeta <code>sample_code</code> que está dentro de <code>modulo_1.5_vscode</code>:</p>
+                    <ul>
+                        <li><strong>Menú:</strong> <span class="menu-path">Archivo → Abrir carpeta...</span></li>
+                        <li><strong>Atajo:</strong> <span class="keyboard-shortcut">Ctrl + K</span>, después
+                            <span class="keyboard-shortcut">Ctrl + O</span>
+                        </li>
+                    </ul>
+                    <p style="margin-top: 0.5rem;">Navega hasta la carpeta <code>sample_code</code> y haz clic en
+                        <strong>"Seleccionar carpeta"</strong>.</p>
+
+                    <div class="warning-box">
+                        <h4>⚠️ ¡Importante!</h4>
+                        <p>Debes abrir la <strong>carpeta</strong> que contiene <code>main.py</code>, no el archivo
+                            directamente.
+                            La extensión necesita un proyecto (carpeta) abierto para funcionar correctamente.</p>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3><span class="step-number">2</span> Verificar que el archivo main.py está presente</h3>
+                    <p>En el panel del explorador (izquierda), deberías ver el archivo <code>main.py</code>. Haz clic en
+                        él para abrirlo.</p>
+
+                    <div class="tip-box">
+                        <h4>💡 ¿Por qué main.py?</h4>
+                        <p>La extensión de micro:bit busca específicamente un archivo llamado <code>main.py</code>
+                            para ejecutarlo en la placa. Este nombre es obligatorio.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>👀 Paso 2: Entender el código</h2>
+
+                <div class="step-box">
+                    <h3><span class="step-number">3</span> Revisar el código de ejemplo</h3>
+                    <p>El archivo <code>main.py</code> contiene este código:</p>
+
+                    <div class="code-block">
+                        <span class="comment"># Mi primer programa para micro:bit desde Antigravity</span>
+                        <span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+                        <span class="comment"># Mostramos un mensaje en la pantalla LED</span>
+                        display.scroll(<span class="string">"Hola!"</span>)
+
+                        <span class="comment"># Mostramos un corazón</span>
+                        display.show(Image.HEART)
+                    </div>
+
+                    <div class="tip-box">
+                        <h4>💡 ¿Qué hace este código?</h4>
+                        <ul>
+                            <li><code>from microbit import *</code> → Importa todas las funciones de micro:bit</li>
+                            <li><code>display.scroll("Hola!")</code> → Muestra "Hola!" desplazándose por la pantalla
+                            </li>
+                            <li><code>display.show(Image.HEART)</code> → Muestra un corazón ❤️</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>⚡ Paso 3: Flashear a la micro:bit</h2>
+
+                <div class="step-box">
+                    <h3><span class="step-number">4</span> Conectar tu micro:bit</h3>
+                    <p>Asegúrate de que tu micro:bit esté conectada al ordenador por USB (debería aparecer como unidad
+                        MICROBIT).</p>
+                </div>
+
+                <div class="step-box">
+                    <h3><span class="step-number">5</span> Flashear usando la Paleta de Comandos</h3>
+                    <p>Este es el método más fiable para cargar el programa en la micro:bit:</p>
+                    <ol>
+                        <li>Abre la <strong>Paleta de Comandos</strong>:
+                            <ul>
+                                <li><strong>Menú:</strong> <span class="menu-path">Ver → Paleta de comandos</span></li>
+                                <li><strong>Atajo:</strong> <span class="keyboard-shortcut">Ctrl + Shift + P</span></li>
+                            </ul>
+                        </li>
+                        <li>Escribe: <code>micro:bit-python: Flash sketch</code></li>
+                        <li>Selecciona el comando <strong>"micro:bit-python: Flash sketch on the micro:bit"</strong>
+                        </li>
+                        <li>Presiona <strong>Enter</strong></li>
+                    </ol>
+
+                    <div class="warning-box">
+                        <h4>⚠️ Usa siempre la Paleta de Comandos</h4>
+                        <p>Aunque existe el atajo <code>Ctrl+F6</code>, recomendamos usar la Paleta de Comandos
+                            (<code>Ctrl+Shift+P</code>) porque es más fiable y evita errores.</p>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3><span class="step-number">6</span> Esperar y observar</h3>
+                    <p>Verás lo siguiente:</p>
+                    <ul>
+                        <li>El LED amarillo de la micro:bit parpadeará (está recibiendo el programa)</li>
+                        <li>Antigravity mostrará un mensaje de progreso en la parte inferior</li>
+                        <li>Cuando termine, ¡tu programa se ejecutará automáticamente!</li>
+                    </ul>
+
+                    <div class="warning-box">
+                        <h4>⚠️ ¡No desconectes el cable!</h4>
+                        <p>Espera a que el LED deje de parpadear antes de desconectar. Si lo haces antes, podrías
+                            corromper el flasheo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🎉 ¡Resultado!</h2>
+                <p>Si todo ha ido bien, deberías ver:</p>
+                <ol style="margin-left: 1.5rem; line-height: 2;">
+                    <li>El texto "Hola!" desplazándose por la pantalla LED</li>
+                    <li>Un corazón ❤️ apareciendo al final</li>
+                </ol>
+
+                <div class="tip-box">
+                    <h4>🔄 Para ejecutar de nuevo</h4>
+                    <p>Puedes reiniciar el programa pulsando el <strong>botón de RESET</strong> en la parte trasera de
+                        la micro:bit, o desconectando y volviendo a conectar el USB.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🏆 Tu Reto</h2>
+
+                <div class="challenge-box">
+                    <h3>¡Personaliza tu programa!</h3>
+                    <p><strong>Objetivo:</strong> Modifica el programa para que muestre tu nombre y un icono diferente.
+                    </p>
+
+                    <h4 style="margin-top: 1.5rem; color: #744210;">Pasos:</h4>
+                    <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Abre el archivo <code>main.py</code></li>
+                        <li>Cambia <code>"Hola!"</code> por tu nombre</li>
+                        <li>Cambia <code>Image.HEART</code> por otro icono (prueba: <code>Image.HAPPY</code>,
+                            <code>Image.SMILE</code>, <code>Image.DUCK</code>)
+                        </li>
+                        <li>Guarda el archivo: <span class="keyboard-shortcut">Ctrl + S</span></li>
+                        <li>Flashea de nuevo: <span class="keyboard-shortcut">Ctrl + Shift + P</span> → "Flash sketch"
+                        </li>
+                    </ol>
+
+                    <h4 style="margin-top: 1.5rem; color: #744210;">Bonus:</h4>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Añade más líneas para mostrar varios mensajes seguidos</li>
+                        <li>Prueba a usar <code>display.show()</code> en lugar de <code>display.scroll()</code> - ¿qué
+                            diferencia hay?</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <h4>📌 Resumen de comandos importantes</h4>
+                <ul>
+                    <li><span class="keyboard-shortcut">Ctrl + K, Ctrl + O</span> → Abrir carpeta</li>
+                    <li><span class="keyboard-shortcut">Ctrl + S</span> → Guardar</li>
+                    <li><span class="keyboard-shortcut">Ctrl + Shift + P</span> → Abrir Paleta de Comandos</li>
+                    <li>Comando: <code>micro:bit-python: Flash sketch on the micro:bit</code> → Flashear programa</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="01_configurar_vscode.html" class="nav-link">← Anterior: Configurar Antigravity</a>
+            <a href="03_linea_comandos.html" class="nav-link">Siguiente: Línea de comandos →</a>
+        </div>
+
+        <footer>
+            <p>💻 Retos Python micro:bit - Módulo 1.5 | ¡Sigue adelante! 🚀</p>
+        </footer>
+    </div>
+</body>
+
+</html>

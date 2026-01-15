@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sesión 3: Flasheando desde Línea de Comandos - micro:bit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #1e3a5f 0%, #0d7377 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 2.5rem;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            color: #6c5ce7;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #a29bfe;
+            display: inline-block;
+        }
+
+        .step-box {
+            background: linear-gradient(135deg, #f0e6ff 0%, #e0d5f5 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #6c5ce7;
+        }
+
+        .step-box h3 {
+            color: #1e3a5f;
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .step-number {
+            background: #6c5ce7;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .step-box p,
+        .step-box ul {
+            line-height: 1.7;
+            color: #2d3748;
+        }
+
+        .step-box ul {
+            margin-left: 1.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .step-box li {
+            margin: 0.5rem 0;
+        }
+
+        .terminal-block {
+            background: #1a1a2e;
+            color: #00ff88;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .terminal-block .prompt {
+            color: #00bfff;
+        }
+
+        .terminal-block .command {
+            color: #ffffff;
+        }
+
+        .terminal-block .output {
+            color: #aaaaaa;
+        }
+
+        .terminal-block .success {
+            color: #00ff88;
+        }
+
+        .menu-path {
+            background: #2d3748;
+            color: #68d391;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .keyboard-shortcut {
+            background: #4a5568;
+            color: #fbd38d;
+            padding: 0.3rem 0.6rem;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            border: 1px solid #718096;
+        }
+
+        .tip-box {
+            background: #c6f6d5;
+            border-left: 5px solid #48bb78;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .tip-box h4 {
+            color: #2f855a;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .warning-box {
+            background: #feebc8;
+            border-left: 5px solid #ed8936;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .warning-box h4 {
+            color: #c05621;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-box {
+            background: #bee3f8;
+            border-left: 5px solid #3182ce;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .info-box h4 {
+            color: #2b6cb0;
+            margin-bottom: 0.5rem;
+        }
+
+        .challenge-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #f5576c;
+        }
+
+        .challenge-box h3 {
+            color: #c53030;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2.5rem;
+            background: #f7fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .nav-link {
+            color: #6c5ce7;
+            text-decoration: none;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #a29bfe;
+        }
+
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💻 Sesión 3: Línea de Comandos</h1>
+            <p class="subtitle">Módulo 1.5: Programando desde VS Code</p>
+            <span class="badge">Nivel avanzado: usa la terminal</span>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <h2>🎯 Objetivo de esta sesión</h2>
+                <p>
+                    Vamos a aprender a flashear programas a la micro:bit usando la <strong>línea de comandos</strong>
+                    (terminal).
+                    Esto es útil cuando quieres más control o automatizar el proceso.
+                </p>
+
+                <div class="info-box">
+                    <h4>🤔 ¿Por qué usar la línea de comandos?</h4>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Es más rápido una vez que lo dominas</li>
+                        <li>Puedes automatizar tareas con scripts</li>
+                        <li>Funciona sin necesidad de abrir VS Code</li>
+                        <li>Es una habilidad importante para cualquier programador</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📦 Paso 1: Instalar uflash</h2>
+
+                <div class="step-box">
+                    <h3><span class="step-number">1</span> Abrir la terminal en VS Code</h3>
+                    <p>Hay varias formas de abrir la terminal integrada:</p>
+                    <ul>
+                        <li><strong>Menú:</strong> <span class="menu-path">Ver → Terminal</span></li>
+                        <li><strong>Menú alternativo:</strong> <span class="menu-path">Terminal → Nuevo terminal</span>
+                        </li>
+                        <li><strong>Atajo:</strong> <span class="keyboard-shortcut">Ctrl + `</span> (la tecla encima del
+                            Tab)</li>
+                    </ul>
+                    <p style="margin-top: 0.5rem;">Aparecerá un panel en la parte inferior de VS Code con la terminal.
+                    </p>
+                </div>
+
+                <div class="step-box">
+                    <h3><span class="step-number">2</span> Instalar uflash con pip</h3>
+                    <p><code>uflash</code> es una herramienta que permite flashear programas MicroPython a la micro:bit
+                        desde la terminal.</p>
+                    <p style="margin-top: 0.5rem;">Escribe este comando y presiona Enter:</p>
+
+                    <div class="terminal-block">
+                        <span class="prompt">$</span> <span class="command">pip install uflash</span>
+                    </div>
+
+                    <p style="margin-top: 0.5rem;">Verás algo como esto cuando termine:</p>
+
+                    <div class="terminal-block">
+                        <span class="output">Collecting uflash</span>
+                        <span class="output"> Downloading uflash-2.0.0-py3-none-any.whl</span>
+                        <span class="output">Installing collected packages: uflash</span>
+                        <span class="success">Successfully installed uflash-2.0.0</span>
+                    </div>
+
+                    <div class="warning-box">
+                        <h4>⚠️ ¿Error de permisos en Linux?</h4>
+                        <p>Si te da error, prueba: <code>pip install --user uflash</code></p>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3><span class="step-number">3</span> Verificar la instalación</h3>
+                    <p>Comprueba que uflash está instalado correctamente:</p>
+
+                    <div class="terminal-block">
+                        <span class="prompt">$</span> <span class="command">uflash --version</span>
+                        <span class="output">uflash 2.0.0</span>
+                    </div>
+
+                    <p style="margin-top: 0.5rem;">Si ves un número de versión, ¡está listo!</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>⚡ Paso 2: Flashear tu programa</h2>
+
+                <div class="step-box">
+                    <h3><span class="step-number">4</span> Navegar a tu carpeta de proyectos</h3>
+                    <p>Si ya tienes abierta tu carpeta en VS Code, la terminal ya estará en el directorio correcto. Si
+                        no, navega con:</p>
+
+                    <div class="terminal-block">
+                        <span class="prompt">$</span> <span class="command">cd
+                            ruta/a/tu/carpeta/mis_programas_microbit</span>
+                    </div>
+
+                    <div class="tip-box">
+                        <h4>💡 Truco: ver archivos</h4>
+                        <p>Usa <code>ls</code> (Linux/Mac) o <code>dir</code> (Windows) para ver los archivos en la
+                            carpeta actual.</p>
+                    </div>
+                </div>
+
+                <div class="step-box">
+                    <h3><span class="step-number">5</span> Flashear el programa</h3>
+                    <p>Asegúrate de que tu micro:bit esté conectada, y ejecuta:</p>
+
+                    <div class="terminal-block">
+                        <span class="prompt">$</span> <span class="command">uflash hola_mundo.py</span>
+                    </div>
+
+                    <p style="margin-top: 0.5rem;">Verás algo como:</p>
+
+                    <div class="terminal-block">
+                        <span class="output">Flashing hola_mundo.py to: /media/MICROBIT</span>
+                        <span class="success">Done!</span>
+                    </div>
+
+                    <p style="margin-top: 0.5rem;">¡El LED de la micro:bit parpadeará y tu programa se ejecutará!</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📚 Referencia de comandos uflash</h2>
+
+                <div class="step-box">
+                    <h3>Comandos más útiles</h3>
+
+                    <div class="terminal-block">
+                        <span class="comment"># Flashear un archivo específico</span>
+                        <span class="prompt">$</span> <span class="command">uflash mi_programa.py</span>
+
+                        <span class="comment"># Flashear a una micro:bit específica (si tienes varias)</span>
+                        <span class="prompt">$</span> <span class="command">uflash mi_programa.py
+                            /ruta/a/MICROBIT</span>
+
+                        <span class="comment"># Ver ayuda completa</span>
+                        <span class="prompt">$</span> <span class="command">uflash --help</span>
+
+                        <span class="comment"># Ver versión</span>
+                        <span class="prompt">$</span> <span class="command">uflash --version</span>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <h4>💡 Consejo Pro: Historial de comandos</h4>
+                    <p>Usa la tecla <span class="keyboard-shortcut">↑</span> (flecha arriba) para recuperar comandos
+                        anteriores. ¡No tienes que escribir todo otra vez!</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔧 Solución de problemas</h2>
+
+                <div class="warning-box">
+                    <h4>❌ "uflash: command not found"</h4>
+                    <p>uflash no está en el PATH. Prueba:</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Cierra y abre la terminal</li>
+                        <li>Usa <code>python -m uflash hola_mundo.py</code> en su lugar</li>
+                    </ul>
+                </div>
+
+                <div class="warning-box">
+                    <h4>❌ "No micro:bit found"</h4>
+                    <p>La micro:bit no está conectada o no se detecta:</p>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Verifica que el cable USB esté bien conectado</li>
+                        <li>Comprueba que aparece la unidad MICROBIT</li>
+                        <li>Prueba otro puerto USB</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🏆 Tu Reto</h2>
+
+                <div class="challenge-box">
+                    <h3>¡Crea y flashea desde la terminal!</h3>
+                    <p><strong>Objetivo:</strong> Crear un nuevo programa y flashearlo usando solo la línea de comandos.
+                    </p>
+
+                    <h4 style="margin-top: 1.5rem; color: #744210;">Pasos:</h4>
+                    <ol style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Crea un archivo llamado <code>contador.py</code> con el siguiente código:</li>
+                    </ol>
+
+                    <div class="terminal-block" style="background: #2d3748; color: #68d391;">
+                        <span style="color: #a0aec0;"># Contador del 1 al 5</span>
+                        <span style="color: #fc8181;">from</span> microbit <span style="color: #fc8181;">import</span> *
+
+                        <span style="color: #fc8181;">for</span> i <span style="color: #fc8181;">in</span> range(1, 6):
+                        display.show(i)
+                        sleep(1000)
+
+                        display.show(Image.YES)
+                    </div>
+
+                    <ol start="2" style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Flashéalo con: <code>uflash contador.py</code></li>
+                        <li>¡Observa el contador en tu micro:bit!</li>
+                    </ol>
+
+                    <h4 style="margin-top: 1.5rem; color: #744210;">Bonus:</h4>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Modifica el contador para que cuente hacia atrás (5, 4, 3, 2, 1...)</li>
+                        <li>Cambia el tiempo de espera entre números</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>✅ ¡Has completado el Módulo 1.5!</h2>
+
+                <div class="step-box"
+                    style="background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%); border-left-color: #48bb78;">
+                    <h3>🎉 Ahora sabes...</h3>
+                    <ul>
+                        <li>✅ Configurar VS Code para micro:bit</li>
+                        <li>✅ Crear y flashear programas desde VS Code</li>
+                        <li>✅ Usar la línea de comandos con <code>uflash</code></li>
+                        <li>✅ Navegar por la terminal básicamente</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>¡Estás listo para programar como un profesional!</strong></p>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <h4>📌 Resumen de comandos de terminal</h4>
+                <ul>
+                    <li><code>pip install uflash</code> → Instalar uflash</li>
+                    <li><code>uflash archivo.py</code> → Flashear programa</li>
+                    <li><code>cd carpeta</code> → Cambiar de directorio</li>
+                    <li><code>ls</code> / <code>dir</code> → Ver archivos</li>
+                    <li><span class="keyboard-shortcut">↑</span> → Recuperar comando anterior</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <a href="02_primer_programa_vscode.html" class="nav-link">← Anterior: Tu primer programa</a>
+            <a href="index.html" class="nav-link">Volver al índice →</a>
+        </div>
+
+        <footer>
+            <p>💻 Retos Python micro:bit - Módulo 1.5 | ¡Sigue adelante! 🚀</p>
+        </footer>
+    </div>
+</body>
+
+</html>

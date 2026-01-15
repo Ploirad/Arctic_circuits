@@ -37,6 +37,11 @@ El curso está dividido en módulos siguiendo el currículo de Python Essentials
 - Operadores básicos
 - Variables
 
+### Módulo 1.5: Programando desde VS Code (Nuevo)
+- Configurar Visual Studio Code para micro:bit
+- Tu primer programa desde VS Code
+- Flasheando desde la línea de comandos con `uflash`
+
 ### Módulo 2: Tipos de Datos, Variables y Operaciones (Próximamente)
 - Entrada y salida de datos
 - Operadores y expresiones
