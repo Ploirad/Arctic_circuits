@@ -57,15 +57,17 @@ while True:
                     except:
                         print(n)
             print(values, color)
-    
+
+            vel = values[7]
+            
             if values[1] == 1:
-                Robot.move(Directions.CCW, True)
+                Robot.move(Directions.CCW, vel, True)
             elif values[2] == 1:
-                Robot.move(Directions.CW, True)
+                Robot.move(Directions.CW, vel, True)
             else:
                 direction = dataToDirection(values[0])
                 if direction != -1:
-                    Robot.move(direction, True)
+                    Robot.move(direction, vel, True)
 
             if last_3 != values[3]:
                 if values[3] == 1:
@@ -90,6 +92,7 @@ while True:
                 if values[6] == 1:
                     display.scroll("Resetting")
                 last_6 = values[6]
+        print(data)
     except IndexError:
-        pass
+        print("Index error")
     # # sleep(1000)

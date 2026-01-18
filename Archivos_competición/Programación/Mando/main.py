@@ -3,18 +3,21 @@ from microbit import *
 from Radio import *
 from button import *
 from joystick import joystick
-carData = [0,0,"F","F","F","F","F"]
-radio_sys = Radio(47, 7)
-TurnRightButton = button(pin2)
+from potentiometer import Potentiometer as Pot
+carData = [0,0,"F","F","F","F","F",0]
+simaData = [0, 0]
+car_channel = 47
+sima_channel = 50
+radio_sys = Radio(car_channel)
+
+TurnRightButton = button(pin11)
 TurnLeftButton = button(pin8)
 ColorButton = button(pin12)
 CursorButton = button(pin13)
 SystemButton = button(pin14)
 ResetButton = button(pin15)
 Joystick = joystick(pin0,pin1)
-
-simaData = [0, 0]
-radio_sima = Radio(48, 7)
+pot = Pot(pin2)
 
 def listToStr(data):
     return str(data)[1:-2].replace(" ", "").replace("'", "")
@@ -69,7 +72,10 @@ while True:
     carData[4] = CursorButton.getValue()
     carData[5] = SystemButton.getValue()
     carData[6] = ResetButton.getValue()
+    carData[7] = int(pot.read()/4)*10
+    print(listToStr(carData))
     # carData structure to send: "Direction,TurnLeft,TurnRight,Color,Cursor,System,Reset"
+    radio_sys.config(car_channel, 7)
     radio_sys.send(listToStr(carData))
 
     for data in carData:
@@ -79,5 +85,6 @@ while True:
 
     simaData[0] = carData[3] # Color
     simaData[1] = moved # Start the count
+    radio_sys.config(sima_channel, 7)
     # simaData structure to send: "Color,Start"
-    radio_sima.send(listToStr(simaData))
+    radio_sys.send(listToStr(simaData))
