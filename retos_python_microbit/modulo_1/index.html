@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 1: Introducción a Python - micro:bit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #2d3748;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .hero {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: #4a5568;
+            margin-bottom: 2rem;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .challenges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .challenge-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .challenge-number {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .challenge-card h3 {
+            color: #2d3748;
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .challenge-card .emoji {
+            font-size: 2rem;
+            margin-right: 0.5rem;
+        }
+
+        .challenge-card .concepts {
+            background: #f7fafc;
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .challenge-card .time {
+            color: #718096;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .difficulty {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+
+        .difficulty.easy {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .difficulty.medium {
+            background: #feebc8;
+            color: #744210;
+        }
+
+        .project-section {
+            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-top: 2rem;
+            color: white;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-ideas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .project-idea {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .project-idea h4 {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: white;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>🚀 Módulo 1</h1>
+            <p>Introducción a Python y Programación con micro:bit</p>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="number">5</div>
+                    <div class="label">Retos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">~2h</div>
+                    <div class="label">Tiempo Total</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">6</div>
+                    <div class="label">Conceptos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number">∞</div>
+                    <div class="label">Diversión</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="challenges-grid">
+            <a href="01_tu_primer_programa.html" class="challenge-card">
+                <div class="challenge-number">1</div>
+                <h3><span class="emoji">🚀</span>Tu Primer Programa</h3>
+                <div class="concepts">
+                    <strong>Conceptos:</strong> Programación básica, display.show(), primer código
+                </div>
+                <span class="difficulty easy">Principiante</span>
+                <div class="time">⏱️ 15-20 minutos</div>
+            </a>
+
+            <a href="02_mostrando_datos.html" class="challenge-card">
+                <div class="challenge-number">2</div>
+                <h3><span class="emoji">📊</span>Mostrando Datos</h3>
+                <div class="concepts">
+                    <strong>Conceptos:</strong> display.show(), display.scroll(), imágenes, sleep()
+                </div>
+                <span class="difficulty easy">Principiante</span>
+                <div class="time">⏱️ 20-25 minutos</div>
+            </a>
+
+            <a href="03_literales.html" class="challenge-card">
+                <div class="challenge-number">3</div>
+                <h3><span class="emoji">🔢</span>Literales y Datos</h3>
+                <div class="concepts">
+                    <strong>Conceptos:</strong> Strings, integers, floats, booleans
+                </div>
+                <span class="difficulty easy">Principiante</span>
+                <div class="time">⏱️ 25-30 minutos</div>
+            </a>
+
+            <a href="04_operadores.html" class="challenge-card">
+                <div class="challenge-number">4</div>
+                <h3><span class="emoji">➕</span>Operadores Básicos</h3>
+                <div class="concepts">
+                    <strong>Conceptos:</strong> +, -, *, /, //, %, **, orden de operaciones
+                </div>
+                <span class="difficulty medium">Intermedio</span>
+                <div class="time">⏱️ 30-35 minutos</div>
+            </a>
+
+            <a href="05_variables.html" class="challenge-card">
+                <div class="challenge-number">5</div>
+                <h3><span class="emoji">📦</span>Variables</h3>
+                <div class="concepts">
+                    <strong>Conceptos:</strong> Declaración, asignación, nombres, modificación
+                </div>
+                <span class="difficulty medium">Intermedio</span>
+                <div class="time">⏱️ 35-40 minutos</div>
+            </a>
+        </div>
+
+        <div class="project-section">
+            <h2>🎮 Proyecto Final del Módulo</h2>
+            <p style="font-size: 1.1rem; margin-bottom: 1rem;">
+                ¡Pon en práctica todo lo que aprendiste creando un proyecto completo!
+            </p>
+
+            <div class="project-ideas">
+                <div class="project-idea">
+                    <h4>🎲 Dado Digital</h4>
+                    <p>Presiona un botón para lanzar un dado (número aleatorio 1-6)</p>
+                </div>
+                <div class="project-idea">
+                    <h4>🎯 Juego de Adivinar</h4>
+                    <p>El micro:bit piensa un número y tú adivinas con los botones</p>
+                </div>
+                <div class="project-idea">
+                    <h4>💪 Contador de Ejercicios</h4>
+                    <p>Usa el acelerómetro para contar flexiones o abdominales</p>
+                </div>
+                <div class="project-idea">
+                    <h4>🌡️ Termómetro Divertido</h4>
+                    <p>Muestra la temperatura con diferentes emojis según el valor</p>
+                </div>
+                <div class="project-idea">
+                    <h4>⏱️ Cronómetro</h4>
+                    <p>Cuenta segundos y muestra el tiempo transcurrido</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 2rem; text-align: center;">
+                <p style="font-size: 1.1rem; font-weight: bold;">
+                    📝 Requisitos: Usa variables, operadores, y funciones de display
+                </p>
+            </div>
+        </div>
+
+        <footer>
+            <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">
+                💻 Retos Python micro:bit - Módulo 1
+            </p>
+            <p>
+                ¡Felicidades por comenzar tu viaje en la programación! 🎉
+            </p>
+        </footer>
+    </div>
+</body>
+
+</html>

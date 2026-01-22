@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reto 1: Tu Primer Programa - micro:bit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            color: #2d3748;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+        
+        .content {
+            padding: 2.5rem;
+        }
+        
+        .section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #f093fb;
+            display: inline-block;
+        }
+        
+        .concept-box {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #667eea;
+        }
+        
+        .concept-box h3 {
+            color: #4a5568;
+            margin-bottom: 0.8rem;
+            font-size: 1.3rem;
+        }
+        
+        .concept-box p {
+            line-height: 1.7;
+            color: #2d3748;
+        }
+        
+        .challenge-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #f5576c;
+        }
+        
+        .challenge-box h3 {
+            color: #c53030;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .challenge-box ul {
+            margin-left: 1.5rem;
+            margin-top: 1rem;
+        }
+        
+        .challenge-box li {
+            margin: 0.8rem 0;
+            line-height: 1.6;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #68d391;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .code-block .comment {
+            color: #a0aec0;
+        }
+        
+        .code-block .keyword {
+            color: #fc8181;
+        }
+        
+        .code-block .string {
+            color: #fbd38d;
+        }
+        
+        .tip-box {
+            background: #c6f6d5;
+            border-left: 5px solid #48bb78;
+            padding: 1.2rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+        }
+        
+        .tip-box h4 {
+            color: #2f855a;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .link-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .link-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .emoji {
+            font-size: 1.5rem;
+        }
+        
+        footer {
+            background: #2d3748;
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Reto 1: Tu Primer Programa</h1>
+            <p class="subtitle">Módulo 1: Introducción a Python y Programación</p>
+            <span class="badge">Sección 1.1 - Fundamentos</span>
+        </div>
+        
+        <div class="content">
+            <div class="section">
+                <h2>📚 Conceptos Clave</h2>
+                
+                <div class="concept-box">
+                    <h3>¿Qué es un programa?</h3>
+                    <p>
+                        Un programa es un conjunto de instrucciones que le das a una computadora (o en este caso, a tu micro:bit) 
+                        para que realice una tarea específica. Es como una receta de cocina: paso a paso, le dices qué hacer.
+                    </p>
+                </div>
+                
+                <div class="concept-box">
+                    <h3>¿Qué es Python?</h3>
+                    <p>
+                        Python es un lenguaje de programación que nos permite comunicarnos con las computadoras de forma sencilla. 
+                        Es como aprender un nuevo idioma, pero en lugar de hablar con personas, hablas con máquinas.
+                    </p>
+                </div>
+                
+                <div class="concept-box">
+                    <h3>La función display.show()</h3>
+                    <p>
+                        En micro:bit, usamos <code>display.show()</code> para mostrar información en la pantalla LED (similar a cómo 
+                        en Python estándar usamos <code>print()</code>). Es tu forma de ver lo que el programa está haciendo.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>💡 Ejemplo</h2>
+                
+                <p>Aquí está el programa más simple que puedes escribir en micro:bit:</p>
+                
+                <div class="code-block">
+<span class="keyword">from</span> microbit <span class="keyword">import</span> *
+
+<span class="comment"># Este es tu primer programa</span>
+display.show(<span class="string">"Hola"</span>)
+                </div>
+                
+                <div class="tip-box">
+                    <h4>💡 Explicación del código:</h4>
+                    <ul>
+                        <li><code>from microbit import *</code> - Importa todas las funciones de micro:bit</li>
+                        <li><code>display.show("Hola")</code> - Muestra "Hola" en la pantalla LED del micro:bit</li>
+                        <li>Las líneas que empiezan con <code>#</code> son comentarios y el programa las ignora</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>🎯 Tu Reto</h2>
+                
+                <div class="challenge-box">
+                    <h3><span class="emoji">🏆</span> ¡Crea tu primer programa!</h3>
+                    <p><strong>Objetivo:</strong> Hacer que tu micro:bit te salude mostrando tu nombre.</p>
+                    
+                    <h4 style="margin-top: 1.5rem; color: #744210;">Pasos a seguir:</h4>
+                    <ul>
+                        <li>Ve al editor online: <a href="https://python.microbit.org/" target="_blank" style="color: #c53030; font-weight: bold;">python.microbit.org</a></li>
+                        <li>Escribe un programa que muestre tu nombre en la pantalla del micro:bit</li>
+                        <li>Prueba tu programa en el simulador (está a la izquierda del editor)</li>
+                        <li>Si tienes un micro:bit real, descarga el programa y pruébalo</li>
+                    </ul>
+                    
+                    <h4 style="margin-top: 1.5rem; color: #744210;">Bonus (opcional):</h4>
+                    <ul>
+                        <li>Haz que muestre un emoji o imagen usando <code>Image</code></li>
+                        <li>Investiga cómo mostrar varias cosas seguidas</li>
+                        <li>Haz que muestre tu nombre letra por letra</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2>🔗 Recursos</h2>
+                <p>Aquí tienes todo lo que necesitas para completar el reto:</p>
+                <a href="https://python.microbit.org/" target="_blank" class="link-button">
+                    🖥️ Abrir Editor de micro:bit Python
+                </a>
+            </div>
+            
+            <div class="tip-box">
+                <h4>📌 Recuerda</h4>
+                <p>
+                    No te preocupes si algo no funciona la primera vez. La programación es un proceso de prueba y error. 
+                    ¡Todos los programadores enfrentan errores constantemente! Lo importante es aprender de ellos.
+                </p>
+            </div>
+        </div>
+        
+        <footer>
+            <p>💻 Retos Python micro:bit - Módulo 1 | ¡Sigue adelante! 🚀</p>
+        </footer>
+    </div>
+</body>
+</html>
