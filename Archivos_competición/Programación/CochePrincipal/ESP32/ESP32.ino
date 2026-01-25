@@ -1,24 +1,38 @@
-#include "I2C_SLAVE.h"
+#include "CLAW.h" 
 
-const uint8_t ESP32_I2C_ADDRESS = 0x42;
-I2C_SLAVE MicroBit(ESP32_I2C_ADDRESS);
+CLAW garra1(16, 17, 5);
 
 void setup() {
-  // Serial for debugging
   Serial.begin(115200);
-  Serial.println("ESP32 I2C Slave ready");
-  MicroBit.begin();
+  Serial.println("============= CLAW TEST SYSTEM =============");
 }
 
 void loop() {
-  if (MicroBit.isDataAvailable()) {
-    uint8_t* data = MicroBit.getData();
-    size_t size = MicroBit.getDataSize();
-    Serial.print("Received data: ");
-    for (size_t i = 0; i < size; i++) {
-      Serial.print(data[i]);
-      Serial.print(" ");
+  if (Serial.available()) {
+    char command = Serial.read();
+    switch (command) {
+      case 'c':
+        Serial.println("Compressing");
+        garra1.compress(100);
+        break;
+      case 'u':
+        Serial.println("Uncompressing");
+        garra1.uncompress(100, 5000);
+        break;
+      case 't':
+        Serial.println("Turning");
+        garra1.turn();
+        break;
+      case 's':
+        Serial.println("Stopping");
+        garra1.stop();
+        break;
+      case '\n':
+      case '\r':
+        break;
+      default:
+        Serial.println("Unknown command");
+        break;
     }
-    Serial.println();
   }
 }
