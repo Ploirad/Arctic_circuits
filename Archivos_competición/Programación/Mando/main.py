@@ -5,7 +5,7 @@ from button import *
 from joystick import joystick
 from potentiometer import Potentiometer as Pot
 carData = [0,0,"F","F","F","F","F",0]
-simaData = [0, 0]
+simaData = [0, 0] # -> "0,0"
 car_channel = 47
 sima_channel = 50
 radio_sys = Radio(car_channel)
@@ -63,8 +63,9 @@ move = False
 moved = False
 
 while True:
-    x,y,_ = Joystick.getValues()
 
+    # MAIN ROBOT
+    x,y,_ = Joystick.getValues()
     carData[0] = coordToDirection(x, y, 400, 150)
     carData[1] = TurnLeftButton.getValue()
     carData[2] = TurnRightButton.getValue()
@@ -78,6 +79,7 @@ while True:
     radio_sys.config(car_channel, 7)
     radio_sys.send(listToStr(carData))
 
+    # SIMA'S
     for data in carData:
         if not move and not moved and data != 0:
             move = True
