@@ -4,21 +4,24 @@
 #include "Arduino.h"
 #include <Wire.h>
 
+#define I2C_BUFFER_SIZE 32  // Tamaño máximo del buffer
+
 class I2C_SLAVE {
-    public:
-        I2C_SLAVE(uint8_t address);
-        void begin();
-        uint8_t* getData();
-        size_t getDataSize();
-        bool isDataAvailable();
-        
-    private:
-        static const size_t MAX_BUFFER_SIZE = 32;
-        uint8_t _address;
-        static uint8_t _receivedData[MAX_BUFFER_SIZE];
-        static volatile size_t _receivedBytes;
-        static volatile bool _newDataAvailable;
-        static void onReceiveHandler(int numBytes);
+public:
+    I2C_SLAVE(uint8_t address, int sdaPin, int sclPin);
+    
+    bool isDataAvailable();           // ¿Hay nuevos datos?
+    uint8_t* getData(uint8_t &len);   // Devuelve puntero al buffer y la longitud
+    void clearData();                  // Limpia el buffer manualmente
+    
+private:
+    static void onReceiveHandler(int numBytes);
+    
+    uint8_t _buffer[I2C_BUFFER_SIZE];
+    uint8_t _dataLen;
+    volatile bool _dataAvailable;      // volatile porque se modifica en ISR
+    
+    static I2C_SLAVE* _self;
 };
 
 #endif
