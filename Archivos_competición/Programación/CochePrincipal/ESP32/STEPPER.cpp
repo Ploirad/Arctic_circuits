@@ -1,13 +1,11 @@
 #include "STEPPER.h"
 #include <AccelStepper.h>
 
-const long STEPPER::STEPS_PER_REV = 2038;
+const long STEPPER::STEPS_PER_REV = 4076;
 
-STEPPER::STEPPER(int IN1, int IN2, int IN3, int IN4, bool halfStep)
- : _stepper(
-    halfStep ? AccelStepper::HALF4WIRE : AccelStepper::FULL4WIRE,
-    IN1, IN2, IN3, IN4
- ), relativeStepsToStart(0) {
+STEPPER::STEPPER(int IN1, int IN2, int IN3, int IN4)
+ : _stepper(AccelStepper::HALF4WIRE, IN1, IN3, IN2, IN4),
+    relativeStepsToStart(0) {
     _stepper.setMaxSpeed(500.0);
     _stepper.setAcceleration(200.0);
 }

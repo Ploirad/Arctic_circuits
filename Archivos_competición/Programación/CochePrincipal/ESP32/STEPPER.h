@@ -6,7 +6,7 @@
 
 class STEPPER {
     public:
-        STEPPER(int IN1, int IN2, int IN3, int IN4, bool halfStep = false);
+        STEPPER(int IN1, int IN2, int IN3, int IN4);
         void setMaxSpeed(float speed);
         void setAcceleration(float acceleration);
         void setSpeed(float speed);
