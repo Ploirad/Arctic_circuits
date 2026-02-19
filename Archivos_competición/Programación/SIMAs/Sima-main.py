@@ -1,33 +1,32 @@
 from microbit import *
-from radio import Radio #radio con minuscula tienes que crear un archivo con el codigo de Radio.py esto en microbit python editor
-import radio
+from wukong import *
 wk = WUKONG()
-r = Radio(48, 7)#r es el equivalente de radio
-r.on()
-while True:
-    cadena = r.receive()
-    if  cadena == [0, "T"]:
-        movimiento(0)
-        break
-    elif cadena == [1, "T"]:
-        display.scroll("Azul, empezar")
-        break
-    else:
-        display.scroll("Estar parado")
+
+def Avance(Velocidad, Tiempo):
+    wk.set_motors(1, Velocidad - 1)
+    wk.set_motors(2, -1 * Velocidad)
+    sleep(Tiempo)
 
 
-radio.config(group=48)
+def Giro(Color):#Color -1 es amarillo es decir lo contrario
+    wk.set_motors(1, 30 * Color)
+    wk.set_motors(2, -15 * Color)
+    sleep(1000)
 
-
-
-
-
-while True:
-    if 1 == pin8.read_digital():
-        wk.set_motors(1, 0)
-        wk.set_motors(2, 0)
-        radio.config(group=255)
-    
-
+def Parar():
+    wk.set_motors(1, 0)
+    wk.set_motors(2, 0)
         
+        
+        
+        
+    
+while True:
+    if button_a.is_pressed():
+        sleep(5000)
+        Avance(100, 2000)
+        Giro(-1)
+        Avance(100, 2000)
+        Parar()
+          
 
