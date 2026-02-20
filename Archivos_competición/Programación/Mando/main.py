@@ -4,40 +4,52 @@ from Radio import *
 from button import *
 from joystick import joystick
 from potentiometer import Potentiometer as Pot
-carData = [0,0,"F","F","F","F","F",0]
+carData = [0,0,"F","F","F","F","F",0,0]
 simaData = [0, 0] # -> "0,0"
 car_channel = 47
 sima_channel = 50
 radio_sys = Radio(car_channel)
 
-TurnRightButton = button(pin11)
-TurnLeftButton = button(pin8)
-ColorButton = button(pin12)
-CursorButton = button(pin13)
-SystemButton = button(pin14)
-ResetButton = button(pin15)
-Joystick = joystick(pin0,pin1)
+display.off()
+
+movementJoystick = joystick(pin0, pin1)
+movementJoystick.setButton(pin5)
 pot = Pot(pin2)
+actionsJoystick = joystick(pin3, pin4)
+actionsJoystick.setButton(pin6)
+turn1 = button(pin7)
+turn2 = button(pin8)
+turn3 = button(pin9)
+turn4 = button(pin10)
+color = button(pin11)
 
 def listToStr(data):
+    return str(data)[1:-2].replace(" ", "").replace("'", "").replace(",", "")
+def listToStrSima(data):
     return str(data)[1:-2].replace(" ", "").replace("'", "")
 
 class Directions:
-    Stop = 0
-    Ahead = 1
-    Backwards = 2
-    Left = 3
-    Right = 4
-    Left_Ahead = 5
-    Right_Ahead = 6
-    Left_Backwards = 7
-    Right_Backwards = 8
+    Stop = "00"
+    Ahead = "01"
+    Backwards = "02"
+    Left = "03"
+    Right = "04"
+    Left_Ahead = "05"
+    Right_Ahead = "06"
+    Left_Backwards = "07"
+    Right_Backwards = "08"
+    CW = "09"
+    CCW = "10"
 
-def coordToDirection(x: int, y: int, base=700,ratio=150):
+def coordToDirection(x: int, y: int, b: int, base=400,ratio=150):
     maximum = base + ratio
     minimum = base - ratio
+    if b == -1:
+        b = 0
 
     if x >= maximum:
+        if b == 1:
+            return Directions.CW
         if y >= maximum:
             return Directions.Right_Ahead
         elif y <= minimum:
@@ -45,6 +57,8 @@ def coordToDirection(x: int, y: int, base=700,ratio=150):
         else:
             return Directions.Right
     elif x <= minimum:
+        if b == 1:
+            return Directions.CCW
         if y >= maximum:
             return Directions.Left_Ahead
         elif y <= minimum:
@@ -65,28 +79,57 @@ moved = False
 while True:
 
     # MAIN ROBOT
-    x,y,_ = Joystick.getValues()
-    carData[0] = coordToDirection(x, y, 400, 150)
-    carData[1] = TurnLeftButton.getValue()
-    carData[2] = TurnRightButton.getValue()
-    carData[3] = ColorButton.getValue()
-    carData[4] = CursorButton.getValue()
-    carData[5] = SystemButton.getValue()
-    carData[6] = ResetButton.getValue()
-    carData[7] = int(pot.read()/4)*10
-    print(listToStr(carData))
-    # carData structure to send: "Direction,TurnLeft,TurnRight,Color,Cursor,System,Reset"
+    x,y,btn = movementJoystick.getValues()
+    direction = coordToDirection(x, y, btn)
+    
+    potValue = pot.read()
+
+    close,down,temp = actionsJoystick.getValues()
+    if close > (400+150):
+        carData[6] = "2"
+    elif close < (400-150):
+        carData[6] = "1"
+    else:
+        carData[6] = "0"
+
+    if down > (400+150):
+        carData[7] = "2"
+    elif down < (400-150):
+        carData[7] = "1"
+    else:
+        carData[7] = "0"
+
+    potValueToSend = str(potValue)
+    if len(potValueToSend) == 2:
+        potValueToSend = "0"+potValueToSend
+    elif len(potValueToSend) == 1:
+        potValueToSend = "00"+potValueToSend
+    
+    carData[0] = direction
+    carData[1] = potValueToSend
+    carData[2] = turn1.getValue()
+    carData[3] = turn2.getValue()
+    carData[4] = turn3.getValue()
+    carData[5] = turn4.getValue()
+    # carData[6] = close
+    # carData[7] = down
+    if temp:
+        carData[8] = "T"
+    else:
+        carData[8] = "F"
+    data = listToStr(carData).replace("F", "0").replace("T", "1")
+    print(data)
     radio_sys.config(car_channel, 7)
-    radio_sys.send(listToStr(carData))
+    radio_sys.send(data)
 
     # SIMA'S
-    for data in carData:
-        if not move and not moved and data != 0:
+    for data in [carData[2], carData[3], carData[4], carData[5], carData[8]]:
+        if not move and not moved and data != "F":
             move = True
             moved = True
 
-    simaData[0] = carData[3] # Color
+    simaData[0] = color.getValue() # Color
     simaData[1] = moved # Start the count
     radio_sys.config(sima_channel, 7)
     # simaData structure to send: "Color,Start"
-    radio_sys.send(listToStr(simaData))
+    radio_sys.send(listToStrSima(simaData))

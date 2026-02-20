@@ -32,67 +32,45 @@ def dataToDirection(d: int):
         return Directions.Left_Backwards
     elif d == 8:
         return Directions.Right_Backwards
+    elif d == 9:
+        return Directions.CW
+    elif d == 10:
+        return Directions.CCW
     else:
         return -1
 
-color = "Yellow"
-last_3 = 0
-last_4 = 0
-last_5 = 0
-last_6 = 0
+last_8 = 0
 while True:
     #X, Y, TR,TL,C, Cs,S, R       
     values = []
     data = PrincipalRadio.receive()
     try:
         if data != -1:
-            for n in data.split(","):
-                if "F" in n.upper():
-                    values.append(0)
-                elif "T" in n.upper():
-                    values.append(1)
-                else:
-                    try:
-                        values.append(int(n))
-                    except:
-                        print(n)
-            print(values, color)
+            #00 0 0 0 0 0 0 0
+            values = [int(data[0:2])]
+            values.append(int(data[2:5]))
+            for i in data[5:]:
+                values.append(int(i))
+            print(values)
 
-            vel = values[7]
+            vel = values[1]
             
-            if values[1] == 1:
-                Robot.move(Directions.CCW, vel, True)
-            elif values[2] == 1:
-                Robot.move(Directions.CW, vel, True)
-            else:
-                direction = dataToDirection(values[0])
-                if direction != -1:
-                    Robot.move(direction, vel, True)
+            direction = dataToDirection(values[0])
+            if direction != -1:
+                Robot.move(direction, vel, True)
 
-            if last_3 != values[3]:
-                if values[3] == 1:
-                    if color == "Yellow":
-                        color = "Blue"
-                    else:
-                        color = "Yellow"
-                last_3 = values[3]
-        
-            if last_4 != values[4]:
-                i2c_master.write(ESP32_ADDRESS, [values[5], values[4]])
-                last_5 = values[4]
-        
-            if last_5 != values[5]:
-                if values[6] == 1:
+            if last_8 != values[8]:
+                if values[8] == 1:
                     cursorServo.move(90)
                 else:
                     cursorServo.move(0)
-                last_5 = values[5]
-        
-            if last_6 != values[6]:
-                if values[6] == 1:
-                    display.scroll("Resetting")
-                last_6 = values[6]
-        print(data)
+                last_8 = values[8]
+
+            # i2c_master.write(ESP32_ADDRESS, [
+            #     values[2], values[3], values[4], values[5],
+            #     values[6], values[7]
+            # ])
+
     except IndexError:
         print("Index error")
     # # sleep(1000)
