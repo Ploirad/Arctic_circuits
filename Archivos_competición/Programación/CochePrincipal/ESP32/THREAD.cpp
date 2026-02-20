@@ -28,29 +28,9 @@ Thread::Thread(ThreadFunction function, void* parameter,
 
 // Destructor
 Thread::~Thread() {
-    // Primero parar el thread si está corriendo
-    if (_handle != nullptr) {
-        // Cambiar estado primero
-        _state = ThreadState::DEAD;
-        
-        // Intentar eliminar la tarea
-        vTaskDelete(_handle);
-        _handle = nullptr;
-    }
-    
-    // Limpiar resultado
-    clearResult();
-
-    // Eliminar semáforos
-    if (_resultMutex) {
-        vSemaphoreDelete(_resultMutex);
-        _resultMutex = nullptr;
-    }
-    if (_endSemaphore) {
-        vSemaphoreDelete(_endSemaphore);
-        _endSemaphore = nullptr;
-    }
-
+    stop();
+    if (_resultMutex) vSemaphoreDelete(_resultMutex);
+    if (_endSemaphore) vSemaphoreDelete(_endSemaphore);
     Serial.printf("[THREAD] Destroyed thread '%s'\n", _name);
 }
 
