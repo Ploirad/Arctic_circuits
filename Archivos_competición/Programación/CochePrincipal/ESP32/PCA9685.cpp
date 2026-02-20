@@ -4,7 +4,7 @@ const int PCA9685::MAX_PULSE_180 = 565;   // 180º
 const int PCA9685::MIN_PULSE_180 = 172;   // 0°
 const int PCA9685::MAX_PULSE_360 = 565;  // max vel CW
 const int PCA9685::MIN_PULSE_360 = 172;  // min vel CCW
-const int PCA9685::STOP_PULSE_360 = 368; // stop
+const int PCA9685::STOP_PULSE_360 = 400; // stop
 
 PCA9685::PCA9685(uint8_t address) : pca(address) {}
 
