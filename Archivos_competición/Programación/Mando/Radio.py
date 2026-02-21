@@ -53,3 +53,18 @@ class Radio:
             return message
         else:
             return -1
+
+    def config(self, channel=None, power=None):
+        if channel is not None:
+            if channel < 0:
+                channel = 0
+            elif channel > 255:
+                channel = 255
+            self.Channel = channel
+        if power is not None:
+            if power < 0:
+                power = 0
+            elif power > 7:
+                power = 7
+            self.Power = power
+        radio.config(group=self.Channel, power=self.Power)
