@@ -104,19 +104,20 @@ while True:
         potValueToSend = "0"+potValueToSend
     elif len(potValueToSend) == 1:
         potValueToSend = "00"+potValueToSend
+
+    turnValues = [turn1.getValue(), turn2.getValue(), turn3.getValue(), turn4.getValue()]
     
     carData[0] = direction
     carData[1] = potValueToSend
-    carData[2] = turn1.getValue()
-    carData[3] = turn2.getValue()
-    carData[4] = turn3.getValue()
-    carData[5] = turn4.getValue()
+    for i in range(4):
+        carData[i+2] = turnValues[i]
     # carData[6] = close
     # carData[7] = down
     if temp:
         carData[8] = "T"
     else:
         carData[8] = "F"
+    
     data = listToStr(carData).replace("F", "0").replace("T", "1")
     print(data)
     radio_sys.config(car_channel, 7)
