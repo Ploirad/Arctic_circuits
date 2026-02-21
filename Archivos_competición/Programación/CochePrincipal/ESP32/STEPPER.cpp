@@ -38,6 +38,10 @@ int STEPPER::moveSteps(int steps, bool CW) {
     return steps;
 }
 
+void STEPPER::runContinuous() {
+    _stepper.runSpeed();
+}
+
 void STEPPER::setAsStartPosition() { relativeStepsToStart = 0; }
 void STEPPER::moveToStartPosition() {
     _stepper.move(-relativeStepsToStart);

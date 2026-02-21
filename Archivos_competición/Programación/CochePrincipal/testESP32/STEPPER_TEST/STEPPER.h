@@ -16,6 +16,7 @@ class STEPPER {
         void stop();
         void setAsStartPosition();
         void moveToStartPosition();
+        void runContinuous();
 
     private:
         AccelStepper _stepper;
