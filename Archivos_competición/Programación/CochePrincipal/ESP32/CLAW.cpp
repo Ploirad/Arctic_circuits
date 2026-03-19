@@ -31,14 +31,20 @@ void CLAW::begin() {
 }
 
 void CLAW::compress(int speed) {
+    EORT.resume();
     if (_stateMutex == NULL) return;
     xSemaphoreTake(_stateMutex, portMAX_DELAY);
-    bool COMPRESSED = compressed;
-    xSemaphoreGive(_stateMutex);
-    if (COMPRESSED) return; // Already compressed, do nothing
-    _pca.setVelocity(_compressionChannel, speed);
+    if (compressed==1){
+        Serial.println("PRESSED");
+        xSemaphoreGive(_stateMutex);
+        return;
+    } else {
+        xSemaphoreGive(_stateMutex);
+        _pca.setVelocity(_compressionChannel, speed);
+    }
 }
 void CLAW::uncompress(int speed) {
+    EORT.pause();
     _pca.setVelocity(_compressionChannel, -speed);
 }
 void CLAW::stop() {
@@ -60,6 +66,8 @@ void* CLAW::EORT_func(void* parameter) {
     if (self->_stateMutex == NULL) return nullptr;
     while (true) {
         bool pressed = self->endOfRace.pressed();
+        // Serial.println(pressed);
+        if (pressed) { self->stop(); }
         xSemaphoreTake(self->_stateMutex, portMAX_DELAY);
         self->compressed = pressed;
         xSemaphoreGive(self->_stateMutex);
