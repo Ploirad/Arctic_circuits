@@ -3,9 +3,10 @@ import utime
 import math
 from Button import Button
 from wukong import *
+from RadioLib import Radio as r
 
 class Sima:
-    def __init__(self, x0, y0, firstAngle, xf, yf, v, angularVelocity, lin_regulation, ang_regulation, HC_SR04_pin, panic_pin):
+    def __init__(self, x0, y0, firstAngle, xf, yf, v, angularVelocity, lin_regulation, ang_regulation, HC_SR04_pin, panic_pin, channel):
         self.x = x0
         self.y = y0
         self.x0 = x0
@@ -20,6 +21,7 @@ class Sima:
         self.HC_SR04_pin = HC_SR04_pin
         self.wk = WUKONG()
         self.emergencyBtn = Button(panic_pin)
+        self.radio = r(channel, Power=7)
         
         # ✅ VARIABLES ODOMETRÍA COMO ATRIBUTOS
         self._last_odom_time = 0.0
@@ -37,14 +39,30 @@ class Sima:
         self.ULTRASONIC_THRESHOLD = 25
         self.state = "GO_TO_GOAL"
 
+    def decode(self, message):
+        # MESSAGE STRUCTURE:
+        # "Color,Start"
+        if message == -1:
+            return False, False
+        try:
+            color_str, start_str = message.split(',')
+            color = self._dataToVal(color_str.strip().upper())
+            start = self._dataToVal(start_str.strip().upper())
+            return color, start
+        except ValueError:
+            print("Invalid message format:", message)
+            return False, False
+        
     def setColor(self, color):
         self.color = color
         
     def start(self):
         display.show(Image.ARROW_N)
-        # Sistema de arranque
-        # TODO: Ignore
+        color, start = self.decode(self.radio.receive())
+        while not start:
+            color, start = self.decode(self.radio.receive())
 
+        self.setColor(color)
         display.show(Image.YES)
         self._last_odom_time = self._current_time()
         while True:
@@ -81,6 +99,12 @@ class Sima:
             display.show(Image.ARROW_N)
 
         return False # Continuar el loop principal
+
+    def _dataToVal(self, data):
+        if data == "F" or data == 0:
+            return False
+        else:
+            return True
 
     def _read_ultrasonic(self):
         """
@@ -339,3 +363,14 @@ class Sima:
 
         # 8) Recuperar orientación original
         self._turn_to_orientation(self.stored_trace_theta)
+
+if __name__ == '__main__':
+    SIMA = Sima(
+        x0 = 0.0, y0 = 0.0, firstAngle = 0.0,
+        xf = 100.0, yf = 0.0,
+        v = 20.0, angularVelocity = 90.0,
+        lin_regulation = 100.0, ang_regulation = 100.0,
+        HC_SR04_pin = pin2, panic_pin = pin1,
+        channel = 36
+    )
+    SIMA.start()
