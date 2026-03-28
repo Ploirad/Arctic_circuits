@@ -8,7 +8,8 @@ ESP32_ADDRESS = 0x42
 i2c_master = I2C_MASTER()
 
 Robot = OmniRobot()
-cursorServo = Servo(Servos.S1)
+cursorServo1 = Servo(Servos.S8)
+cursorServo2 = Servo(Servos.S7)
 
 #moves = [Directions.Stop, Directions.Ahead, Directions.Backwards, Directions.Left, Directions.Right, Directions.Left_Ahead, Directions.Right_Ahead, Directions.Left_Backwards, Directions.Right_Backwards, Directions.CW, Directions.CCW]
 PrincipalRadio = Radio(47, 7)
@@ -61,15 +62,17 @@ while True:
 
             if last_8 != values[8]:
                 if values[8] == 1:
-                    cursorServo.move(90)
+                    cursorServo1.move(90)
+                    cursorServo2.move(90)
                 else:
-                    cursorServo.move(0)
+                    cursorServo1.move(0)
+                    cursorServo2.move(180)
                 last_8 = values[8]
 
-            # i2c_master.write(ESP32_ADDRESS, [
-            #     values[2], values[3], values[4], values[5],
-            #     values[6], values[7]
-            # ])
+            i2c_master.write(ESP32_ADDRESS, [
+                values[2], values[3], values[4], values[5],
+                values[6], values[7]
+            ])
 
     except IndexError:
         print("Index error")

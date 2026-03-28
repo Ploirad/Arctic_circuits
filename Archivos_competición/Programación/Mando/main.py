@@ -23,6 +23,10 @@ turn3 = button(pin9)
 turn4 = button(pin10)
 color = button(pin11)
 
+def map_value(x, in_min, in_max, out_min, out_max):
+    if in_min == in_max:
+        return out_min
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 def listToStr(data):
     return str(data)[1:-2].replace(" ", "").replace("'", "").replace(",", "")
 def listToStrSima(data):
@@ -81,8 +85,11 @@ while True:
     # MAIN ROBOT
     x,y,btn = movementJoystick.getValues()
     direction = coordToDirection(x, y, btn)
-    
-    potValue = pot.read()
+
+    p = pot.read()
+    # print(p)
+    # sleep(100)
+    potValue = min(max(int(map_value(p, 785, 832, 0, 255)), 0), 255)
 
     close,down,temp = actionsJoystick.getValues()
     if close > (400+150):
