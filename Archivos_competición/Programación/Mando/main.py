@@ -79,6 +79,8 @@ def coordToDirection(x: int, y: int, b: int, base=400,ratio=150):
 
 move = False
 moved = False
+moveTemp = False
+canChange = True
 
 while True:
 
@@ -118,15 +120,24 @@ while True:
     carData[1] = potValueToSend
     for i in range(4):
         carData[i+2] = turnValues[i]
-    # carData[6] = close
-    # carData[7] = down
-    if temp:
+
+    if temp and canChange:
+        print(moveTemp)
+        moveTemp = not moveTemp
+        canChange = False
+        print("Pulsado")
+        print(moveTemp)
+    elif not temp:
+        canChange = True
+        print("Resteado")
+        
+    if moveTemp:
         carData[8] = "T"
     else:
         carData[8] = "F"
     
     data = listToStr(carData).replace("F", "0").replace("T", "1")
-    print(data)
+    # print(data)
     radio_sys.config(car_channel, 7)
     radio_sys.send(data)
 
