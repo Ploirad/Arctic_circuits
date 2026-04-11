@@ -5,7 +5,7 @@
 const int compression_servo_channels[4] = {4, 5, 6, 7};
 const int turn_servo_channels[4] = {0, 1, 2, 3};
 const int end_of_race_pins[4] = {4, 5, 23, 13};
-const int stepper_pins[4] = {32, 19, 33, 18};
+const int l298n_pins[4] = {32, 19, 33, 18};
 const uint8_t pca_address = 0x40;
 
 const int microbit_I2C_pins[2] = {16, 17}; // SDA, SCL
@@ -19,7 +19,7 @@ SYSTEM sys(
     compression_servo_channels[2], turn_servo_channels[2], end_of_race_pins[2],
     compression_servo_channels[3], turn_servo_channels[3], end_of_race_pins[3],
     pca_address,
-    stepper_pins[0], stepper_pins[1], stepper_pins[2], stepper_pins[3]
+    l298n_pins[0], l298n_pins[1], l298n_pins[2], l298n_pins[3]
 );
 
 // VARIABLES
@@ -31,9 +31,6 @@ void setup() {
     Serial.begin(115200);
     sys.begin();
     sys.setCompressionSpeed(80); // Percentage (0-100)
-    sys.setStepperMaxSpeed(15000); // In steps/second
-    sys.setStepperSpeed(15000); // In steps/second
-    sys.setStepperAcceleration(5000); // In steps/second²
 }
 
 void loop() {
@@ -70,11 +67,11 @@ void loop() {
             lastTurn[i] = microbit_data[i];
         }
         if (microbit_data[4] == 1) {
-            sys.moveStepper(false);
+            sys.moveL298N(false);
         } else if (microbit_data[4] == 2) {
-            sys.moveStepper(true);
+            sys.moveL298N(true);
         } else {
-            sys.stopStepper();
+            sys.stopL298N();
         }
 
         if (microbit_data[5] == 1) {

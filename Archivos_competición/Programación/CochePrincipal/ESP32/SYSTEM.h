@@ -3,7 +3,7 @@
 
 #include "Arduino.h"
 #include "CLAW.h"
-#include "STEPPER.h"
+#include "L298N.h"
 #include "PCA9685.h"
 #include "THREAD.h"
 
@@ -25,34 +25,27 @@ class SYSTEM {
         void compressClaws();
         void uncompressClaws();
         void stopClaws();
-        void moveStepper(bool CW);
-        void stopStepper();
+        void moveL298N(bool CW);
+        void stopL298N();
 
         void setCompressionSpeed(int speed);
-        void setStepperSpeed(float speed);
-        void setStepperMaxSpeed(float maxSpeed);
-        void setStepperAcceleration(float acceleration);
-
+        
         void emergencyStop();
     private:
-        STEPPER principalStepper;
+        L298N motors;
         PCA9685 pca;
         CLAW claws[4];
         int compressionSpeed;
-
-        float stepperSpeed;
-        float stepperMaxSpeed;
-        float stepperAcceleration;
         
         bool CW;
         bool move;
 
-        Thread stepperThread;
-        SemaphoreHandle_t _stepperMutex;
-        static const uint32_t _stepperThread_stack;
-        static const uint8_t _stepperThread_priority;
-        static const char* _stepperThread_name;
-        static void* stepperThreadFunc(void* parameter);
+        Thread l298nThread;
+        SemaphoreHandle_t _l298nMutex;
+        static const uint32_t _l298nThread_stack;
+        static const uint8_t _l298nThread_priority;
+        static const char* _l298nThread_name;
+        static void* l298nThreadFunc(void* parameter);
 };
 
 #endif

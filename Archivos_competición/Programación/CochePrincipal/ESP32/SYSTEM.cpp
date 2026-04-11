@@ -1,8 +1,8 @@
 #include "SYSTEM.h"
 
-const uint32_t SYSTEM::_stepperThread_stack = 2048;
-const uint8_t SYSTEM::_stepperThread_priority = 1;
-const char* SYSTEM::_stepperThread_name = "StepperThread";
+const uint32_t SYSTEM::_l298nThread_stack = 2048;
+const uint8_t SYSTEM::_l298nThread_priority = 1;
+const char* SYSTEM::_l298nThread_name = "l298nThread";
 
 SYSTEM::SYSTEM(int compressionChannel1, int turnChannel1, int endOfRacePin1,
             int compressionChannel2, int turnChannel2, int endOfRacePin2,
@@ -10,7 +10,7 @@ SYSTEM::SYSTEM(int compressionChannel1, int turnChannel1, int endOfRacePin1,
             int compressionChannel4, int turnChannel4, int endOfRacePin4,
             uint8_t pcaAddress,
             int IN1, int IN2, int IN3, int IN4)
-: principalStepper(IN1, IN2, IN3, IN4),
+: motors(IN1, IN2, IN3, IN4),
 pca(pcaAddress),
 claws{
     CLAW(pca, compressionChannel1, turnChannel1, endOfRacePin1),
@@ -18,25 +18,21 @@ claws{
     CLAW(pca, compressionChannel3, turnChannel3, endOfRacePin3),
     CLAW(pca, compressionChannel4, turnChannel4, endOfRacePin4)
 }, compressionSpeed(150), CW(false), move(false),
-stepperSpeed(300.0), stepperMaxSpeed(600.0), stepperAcceleration(200.0),
-stepperThread(stepperThreadFunc, this, _stepperThread_stack, _stepperThread_priority, _stepperThread_name)
+l298nThread(l298nThreadFunc, this, _l298nThread_stack, _l298nThread_priority, _l298nThread_name)
 {
-    _stepperMutex = xSemaphoreCreateMutex();
-    if (_stepperMutex == NULL) {
+    _l298nMutex = xSemaphoreCreateMutex();
+    if (_l298nMutex == NULL) {
         Serial.println("[SYSTEM] ERROR: Mutex/Semaphore was not created");
     }
 
-    principalStepper.setMaxSpeed(stepperMaxSpeed); // STEPS PER SECOND (steps/s)
-    principalStepper.setAcceleration(stepperAcceleration); // STEPS PER SECOND SQUARED (steps/s^2)
-    principalStepper.stop();
-    principalStepper.setAsStartPosition();
+    motors.stop();
 }
 
 // Añadir destructor en SYSTEM.h y aquí:
 SYSTEM::~SYSTEM() {
-    stepperThread.stop();
-    if (_stepperMutex != NULL) {
-        vSemaphoreDelete(_stepperMutex);
+    l298nThread.stop();
+    if (_l298nMutex != NULL) {
+        vSemaphoreDelete(_l298nMutex);
     }
 }
 
@@ -49,7 +45,7 @@ void SYSTEM::begin() {
     for (int i = 0; i<4; i++){
         claws[i].begin();
     }
-    stepperThread.start();
+    l298nThread.start();
 }
 
 void SYSTEM::turnClaw(int clawIndex) {
@@ -71,19 +67,19 @@ void SYSTEM::stopClaws() {
         claws[i].stop();
     }
 }
-void SYSTEM::moveStepper(bool cw) {
-    if (_stepperMutex == NULL) return;
-    xSemaphoreTake(_stepperMutex, portMAX_DELAY);
+void SYSTEM::moveL298N(bool cw) {
+    if (_l298nMutex == NULL) return;
+    xSemaphoreTake(_l298nMutex, portMAX_DELAY);
     CW = cw;
     move = true;
-    xSemaphoreGive(_stepperMutex);
+    xSemaphoreGive(_l298nMutex);
 }
-void SYSTEM::stopStepper() {
-    if (_stepperMutex == NULL) return;
-    xSemaphoreTake(_stepperMutex, portMAX_DELAY);
+void SYSTEM::stopL298N() {
+    if (_l298nMutex == NULL) return;
+    xSemaphoreTake(_l298nMutex, portMAX_DELAY);
     move = false;
-    xSemaphoreGive(_stepperMutex);
-    principalStepper.stop();
+    xSemaphoreGive(_l298nMutex);
+    motors.stop();
 }
 
 void SYSTEM::setCompressionSpeed(int speed) {
@@ -91,49 +87,32 @@ void SYSTEM::setCompressionSpeed(int speed) {
     if (speed > 100) speed = 100;
     compressionSpeed = speed;
 }
-void SYSTEM::setStepperSpeed(float speed) {
-    if (speed < 0) speed = 0;
-    stepperSpeed = speed;
-}
-void SYSTEM::setStepperMaxSpeed(float maxSpeed) {
-    if (maxSpeed < 0) maxSpeed = 0;
-    stepperMaxSpeed = maxSpeed;
-    principalStepper.setMaxSpeed(stepperMaxSpeed);
-}
-void SYSTEM::setStepperAcceleration(float acceleration) {
-    if (acceleration < 0) acceleration = 0;
-    stepperAcceleration = acceleration;
-    principalStepper.setAcceleration(stepperAcceleration);
-}
 
 void SYSTEM::emergencyStop() {
     // Detener las garras
     stopClaws();
 
     // Detener el motor paso a paso
-    if (_stepperMutex == NULL) return;
-    xSemaphoreTake(_stepperMutex, portMAX_DELAY);
+    if (_l298nMutex == NULL) return;
+    xSemaphoreTake(_l298nMutex, portMAX_DELAY);
     move = false;
-    xSemaphoreGive(_stepperMutex);
-    principalStepper.stop();
+    xSemaphoreGive(_l298nMutex);
+    motors.stop();
 }
 
-void* SYSTEM::stepperThreadFunc(void* parameter) {
+void* SYSTEM::l298nThreadFunc(void* parameter) {
     SYSTEM* self = static_cast<SYSTEM*>(parameter);
-    if (self->_stepperMutex == NULL) return nullptr;
+    if (self->_l298nMutex == NULL) return nullptr;
     while (true) {
-        xSemaphoreTake(self->_stepperMutex, portMAX_DELAY);
+        xSemaphoreTake(self->_l298nMutex, portMAX_DELAY);
         bool _shouldMove = self->move;
         bool _CW = self->CW;
-        float _speed = self->stepperSpeed;
-        xSemaphoreGive(self->_stepperMutex);
+        xSemaphoreGive(self->_l298nMutex);
         if (_shouldMove) {
             // Aplicar dirección a la velocidad
-            float currentSpeed = _CW ? _speed : -_speed;
-            self->principalStepper.setSpeed(currentSpeed);
-            self->principalStepper.runContinuous();  // genera pasos si es momento
+            self->motors.runContinuous(_CW);  // genera pasos si es momento
         } else {
-            self->principalStepper.stop();
+            self->motors.stop();
         }
 
         vTaskDelay(pdMS_TO_TICKS(1));  // Pequeño retardo para no saturar la CPU
