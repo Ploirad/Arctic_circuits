@@ -31,9 +31,9 @@ void setup() {
     Serial.begin(115200);
     sys.begin();
     sys.setCompressionSpeed(80); // Percentage (0-100)
-    sys.setStepperSpeed(1000); // In steps/second
-    sys.setStepperMaxSpeed(10000); // In steps/second
-    sys.setStepperAcceleration(200); // In steps/second²
+    sys.setStepperMaxSpeed(15000); // In steps/second
+    sys.setStepperSpeed(15000); // In steps/second
+    sys.setStepperAcceleration(5000); // In steps/second²
 }
 
 void loop() {

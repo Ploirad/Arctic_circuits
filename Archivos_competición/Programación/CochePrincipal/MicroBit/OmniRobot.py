@@ -24,16 +24,16 @@ class OmniRobot:
         
         self.movements = {
             "stop": [0, 0, 0, 0],
-            "ahead": [1, 1, 1, 1],
+            "backwards": [1, 1, 1, 1],
             "right": [-1, 1, 1, -1],
             "left": [1, -1, -1, 1],
-            "backwards": [-1, -1, -1, -1],
-            "left_ahead": [1, 0, 0, 1],
-            "right_ahead": [0, 1, 1, 0],
-            "right_backwards": [-1, 0, 0, -1],
-            "left_backwards": [0, -1, -1, 0],
-            "cw": [1, -1, 1, -1],
-            "ccw": [-1, 1, -1, 1]
+            "ahead": [-1, -1, -1, -1],
+            "left_backwards": [1, 0, 0, 1],
+            "right_backwards": [0, 1, 1, 0],
+            "right_ahead": [-1, 0, 0, -1],
+            "left_ahead": [0, -1, -1, 0],
+            "ccw": [1, -1, 1, -1],
+            "cw": [-1, 1, -1, 1]
         }
         self.prints = {
             "stop": Image.HAPPY,
