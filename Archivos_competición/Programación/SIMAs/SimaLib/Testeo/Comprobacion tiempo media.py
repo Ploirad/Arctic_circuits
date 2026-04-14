@@ -8,9 +8,7 @@ while True:
         sleep(5000)
         wk.set_motors(1, 100)
         wk.set_motors(2, -98)
-        sleep(2450)
-        wk.set_motors(1,0)
-        wk.set_motors(2,0)
+        
     if button_b.was_pressed():
         wk.set_motors(1,0)
         wk.set_motors(2,0)

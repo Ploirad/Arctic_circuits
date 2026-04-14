@@ -8,13 +8,14 @@ vel_izq = 100
 estado = 1
 # Code in a 'while True:' loop repeats forever
 while True:
+    sleep(500)
     if estado == -1:
         display.show("1:")
         display.scroll(vel_izq)
-        display.show("1:")
-        display.scroll(vel_izq)
+        display.show("2:")
+        display.scroll(vel_der)
         estado = 0
-    if button_a.is_pressed() and button_b.is_pressed():
+    if button_a.was_pressed() and button_b.was_pressed():
         estado = 1
     elif button_a.is_pressed():
         vel_der += 1

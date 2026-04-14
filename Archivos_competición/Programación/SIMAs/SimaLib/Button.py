@@ -107,7 +107,6 @@ if __name__ == "__main__":
         if btn_b.is_pressed():
             print("B presionado")
         if btn_8.was_pressed():
-
             display.show(Image.YES)
         else:
             display.show(Image.NO)

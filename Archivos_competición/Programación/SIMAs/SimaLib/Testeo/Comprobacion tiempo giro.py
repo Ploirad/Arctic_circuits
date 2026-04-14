@@ -5,10 +5,9 @@ from wukong import WUKONG
 wk = WUKONG()
 while True:
     if button_a.was_pressed():
-        sleep(5000)
-        wk.set_motors(1, 99)
-        wk.set_motors(2, -100)
-        
-    if button_b.was_pressed():
+        sleep(2000)
+        wk.set_motors(1,100)
+        wk.set_motors(2,100)
+        sleep(185)
         wk.set_motors(1,0)
         wk.set_motors(2,0)
