@@ -32,6 +32,8 @@ class Button:
         
     def _read_raw(self):
         """Lee estado raw del pin (0=LIBRE, 1=PRESIONADO)."""
+        if self._pin == button_a or self._pin == button_b:
+            return 1 if self._pin.is_pressed() else 0
         return self._pin.read_digital()
     
     def is_pressed(self):
@@ -86,8 +88,7 @@ class Button:
     
     def __repr__(self):
         state = "PRESSED" if self.is_pressed() else "RELEASED"
-        return f"Button(pin{self.pin_number}: {state})"
-
+        return "Button({}: {})".format(self._pin, state)
 
 # Ejemplos de uso (descomenta para test)
 if __name__ == "__main__":
@@ -96,7 +97,7 @@ if __name__ == "__main__":
     # Test botones A/B
     btn_a = Button(button_a)
     btn_b = Button(button_b)
-    btn_p0 = Button(pin0)
+    btn_8 = Button(pin8)
     
     print("Presiona A, B o pin0 para test...")
     
@@ -105,7 +106,9 @@ if __name__ == "__main__":
             print("¡A pulsado!")
         if btn_b.is_pressed():
             print("B presionado")
-        if btn_p0.is_held(2000):
-            print("pin0 mantenido 2s!")
+        if btn_8.was_pressed():
+            display.show(Image.YES)
+        else:
+            display.show(Image.NO)
         
         sleep(100)
