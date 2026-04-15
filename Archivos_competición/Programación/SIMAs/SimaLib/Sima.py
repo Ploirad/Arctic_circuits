@@ -6,7 +6,7 @@ from wukong import *
 from RadioLib import Radio as r
 
 class Sima:
-    def __init__(self, x0, y0, firstAngle, xf, yf, v, angularVelocity, lin_regulation, ang_regulation, HC_SR04_pin, panic_pin, channel):
+    def __init__(self, x0, y0, firstAngle, xf, yf, v, angularVelocity, lin_regulation, ang_regulation, HC_SR04_pin, panic_pin, channel, servo_pin):
         self.x = x0
         self.y = y0
         self.x0 = x0
@@ -22,6 +22,8 @@ class Sima:
         self.wk = WUKONG()
         self.emergencyBtn = Button(panic_pin)
         self.radio = r(channel, Power=7)
+        self.servo_pin = servo_pin
+        self.wk.set_servo(self.servo_pin, 90)  # Posición inicial del servo (puede ajustarse según necesidad)
         
         # ✅ VARIABLES ODOMETRÍA COMO ATRIBUTOS
         self._last_odom_time = 0.0
@@ -55,8 +57,11 @@ class Sima:
         
     def setColor(self, color):
         self.color = color
+        if color == 1:
+            self.x0 -= 3000
+            self.xf -= 3000
         
-    def start(self):
+    def start(self, color):
         display.show(Image.ARROW_N)
         color, start = self.decode(self.radio.receive())
         while not start:
@@ -64,11 +69,16 @@ class Sima:
 
         self.setColor(color)
         display.show(Image.YES)
+        sleep(86 * 1000)
         self._last_odom_time = self._current_time()
         while True:
             sleep(10)
             if self.go():
                 break
+        self.turnServo()
+
+    def turnServo(self):
+        self.wk.set_servo(self.servo_pin, 0)  # Gira el servo a 0 grados (ajusta según necesidad)
 
     def go(self):
         if self.emergencyBtn.is_pressed():
@@ -181,7 +191,6 @@ class Sima:
         dx = a_x - b_x
         dy = a_y - b_y
         return math.sqrt(dx*dx + dy*dy)
-
 
     def _angle_to_point(self, from_x, from_y, from_theta, to_x, to_y):
         """
