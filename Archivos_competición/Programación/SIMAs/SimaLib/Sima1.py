@@ -54,33 +54,39 @@ class Sima:
             now = self._current_time()
             dt  = now - self._last_odom_time
             sleep(10)
-            if self.go(dt) or self.emergencyBtn.is_pressed():
+            if self.go(dt, color) or self.emergencyBtn.was_pressed():
                 self._stop()
                 a = False
-            if self.emergencyBtn.is_pressed():
+            if self.emergencyBtn.was_pressed():
                 parar = False
         while True and parar:
-            self.turnServo(180)
-            sleep(500)
-            self.turnServo(90)
-            sleep(500)
-            
+            now = self._current_time()
+            dt  = now - self._last_odom_time
+            if dt < .5:
+                self.turnServo(180)
+            elif .5 <= dt < 1:
+                self.turnServo(90)
+            else:
+                self._last_odom_time = self._current_time()
             if self.emergencyBtn.is_pressed():
                 break
 
     def turnServo(self, deg):
         self.wk.set_servo(self.servo_pin, deg)  # Gira el servo a 0 grados (ajusta según necesidad)
 
-    def go(self, dt):
+    def go(self, dt, color):
         if self.emergencyBtn.is_pressed():
             self._stop()
             display.show(Image.NO)
             return True # Break loop principal
 
-        if dt <= 5000:
+        if dt <= 2:
             self.wk.set_motors(1, 100)
             self.wk.set_motors(2, -100)
             return False
+        elif 2 > dt <= 2.3:
+            self.wk.set_motors(2, 100*color)
+            self.wk.set_motors(1, 100*color)
         else:    
             return True
                 
