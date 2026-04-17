@@ -1,6 +1,6 @@
 from microbit import *
 import utime
-from Button import Button
+from button import Button
 from wukong import *
 from RadioLib import Radio as r
 
@@ -47,7 +47,7 @@ class Sima:
 
         self.setColor(color)
         display.show(Image.YES)
-        sleep(86 * 1000)
+        #sleep(86 * 1000)
         self._last_odom_time = self._current_time()
         a = True
         while a:
@@ -80,13 +80,21 @@ class Sima:
             display.show(Image.NO)
             return True # Break loop principal
 
-        if dt <= 2:
+        if dt <= 4:
             self.wk.set_motors(1, 100)
             self.wk.set_motors(2, -100)
             return False
-        elif 2 > dt <= 2.3:
-            self.wk.set_motors(2, 100*color)
-            self.wk.set_motors(1, 100*color)
+        elif 4 < dt <= 4.18:
+            if color:
+                self.wk.set_motors(1, 100)
+                self.wk.set_motors(2, 100)
+            else:
+                self.wk.set_motors(1, -100)
+                self.wk.set_motors(2, -100)
+            return False
+        elif 4.18 < dt <= 4.43:
+            self.wk.set_motors(1, 100)
+            self.wk.set_motors(2, -100)
         else:    
             return True
                 
