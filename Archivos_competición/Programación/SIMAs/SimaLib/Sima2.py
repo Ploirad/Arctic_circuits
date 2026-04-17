@@ -92,7 +92,7 @@ class Sima:
                 self.wk.set_motors(1, 100)
                 self.wk.set_motors(2, 100)
             return False
-        elif 2.75 < dt <= 3.25:
+        elif 2.75 < dt <= 3.5:
             self.wk.set_motors(1, 99)
             self.wk.set_motors(2, -100)
         else:    
