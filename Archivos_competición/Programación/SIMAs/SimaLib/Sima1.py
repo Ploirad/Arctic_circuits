@@ -37,6 +37,7 @@ class Sima:
         self.wk.set_motors(2, der)
 
     def start(self):
+        self._stop()
         display.show(Image.ARROW_N)
         color = 0
         parar = True
@@ -101,8 +102,6 @@ class Sima:
 if __name__ == '__main__':
     SIMA = Sima(
         HC_SR04_pin = pin2, panic_pin = pin1,
-        channel = 36, servo_pin=0
+        channel = 50, servo_pin=0
     )
-    SIMA.start()
-
     SIMA.start()
