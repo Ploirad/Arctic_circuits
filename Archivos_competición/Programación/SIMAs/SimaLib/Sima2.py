@@ -46,7 +46,7 @@ class Sima:
            color, start = self.decode(self.radio.receive())
 
         display.show(color)
-        #sleep(86 * 1000)
+        sleep(86 * 1000)
         self.setColor(color)
         self._last_odom_time = self._current_time()
         a = True
@@ -92,7 +92,7 @@ class Sima:
                 self.wk.set_motors(1, 100)
                 self.wk.set_motors(2, 100)
             return False
-        elif 2.75 < dt <= 3:
+        elif 2.75 < dt <= 3.25:
             self.wk.set_motors(1, 99)
             self.wk.set_motors(2, -100)
         else:    
