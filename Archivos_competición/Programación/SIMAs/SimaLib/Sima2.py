@@ -1,6 +1,6 @@
 from microbit import *
 import utime
-from Button import Button
+from button import Button
 from wukong import *
 from RadioLib import Radio as r
 
@@ -46,7 +46,7 @@ class Sima:
            color, start = self.decode(self.radio.receive())
 
         self.setColor(color)
-        display.show(color)
+        display.show(Image.YES)
         #sleep(86 * 1000)
         self._last_odom_time = self._current_time()
         a = True
@@ -54,17 +54,20 @@ class Sima:
             now = self._current_time()
             dt  = now - self._last_odom_time
             sleep(10)
-            if self.go(dt, color) or self.emergencyBtn.is_pressed():
+            if self.go(dt, color) or self.emergencyBtn.was_pressed():
                 self._stop()
                 a = False
-            if self.emergencyBtn.is_pressed():
+            if self.emergencyBtn.was_pressed():
                 parar = False
         while True and parar:
-            self.turnServo(180)
-            sleep(500)
-            self.turnServo(90)
-            sleep(500)
-            
+            now = self._current_time()
+            dt  = now - self._last_odom_time
+            if dt < .5:
+                self.turnServo(180)
+            elif .5 <= dt < 1:
+                self.turnServo(90)
+            else:
+                self._last_odom_time = self._current_time()
             if self.emergencyBtn.is_pressed():
                 break
 
@@ -77,22 +80,13 @@ class Sima:
             display.show(Image.NO)
             return True # Break loop principal
 
-        if dt <= 5000:
+        if dt <= 2:
             self.wk.set_motors(1, 100)
             self.wk.set_motors(2, -100)
             return False
-        elif 2 < dt <= 2.18:
-            if color:
-                self.wk.set_motors(1, 100) 
-                self.wk.set_motors(2, 100)
-            else:
-                self.wk.set_motors(1, -100) 
-                self.wk.set_motors(2, -100)
-            return False
-        #elif 2.18 < dt < 3:
-            #self.wk.set_motors(1, 100)
-            #self.wk.set_motors(2, -100)
-            #return False
+        elif 4.18 < dt <= 4.43:
+            self.wk.set_motors(1, 100)
+            self.wk.set_motors(2, -100)
         else:    
             return True
                 
@@ -102,18 +96,3 @@ class Sima:
         if data == "F" or data == 0:
             return False
         else:
-            return True
-
-
-        
-    def _stop(self):
-        self.wk.set_motors(1, 0)
-        self.wk.set_motors(2, 0)
-
-    
-if __name__ == '__main__':
-    SIMA = Sima(
-        HC_SR04_pin = pin2, panic_pin = pin1,
-        channel = 36, servo_pin=0
-    )
-    SIMA.start()
