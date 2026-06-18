@@ -13,12 +13,17 @@ let fsm; // instancia global usada por los estados
   // Construir la pista una sola vez.
   Road.build();
 
-  // --- Cablear la maquina de estados segun el diagrama ---
-  fsm = new StateMachine();
+  // Cargar imagenes (coches, gasolinera, cartel, fondo).
+  Assets.loadAll();
 
-  // Transiciones de compra: cada "Buy X" vuelve a la gasolinera.
-  const buyTransitions = {};
-  for (const item of CONFIG.shop) buyTransitions['Buy ' + item.name] = 'GasStation';
+  /* --- Cablear la maquina de estados ------------------------------------
+   * La gasolinera/zona de descanso del diagrama original (RoundComplete ->
+   * RestPeriod -> GasStation) se ha unificado en una GASOLINERA FISICA: la
+   * estacion aparece al borde de la carretera durante Playing y, al frenar
+   * junto a ella, "Stop at Station" abre la tienda. Por eso Playing conecta
+   * directamente con ShopMenu y al salir vuelve a Playing.
+   * -------------------------------------------------------------------- */
+  fsm = new StateMachine();
 
   fsm.addState('MainMenu', States.MainMenu, {
     'Start Game': 'Playing',
@@ -26,7 +31,7 @@ let fsm; // instancia global usada por los estados
   fsm.addState('Playing', States.Playing, {
     'Collision Detected': 'Crashed',
     'Pause': 'MainMenu',
-    'Reached Gas Station': 'RoundComplete', // ahora por distancia, no por tiempo
+    'Stop at Station': 'ShopMenu',   // frenar junto a la gasolinera
   });
   fsm.addState('Crashed', States.Crashed, {
     'Lives > 0': 'Playing',
@@ -35,20 +40,9 @@ let fsm; // instancia global usada por los estados
   fsm.addState('GameOver', States.GameOver, {
     'Game Over': 'MainMenu',
   });
-  fsm.addState('RoundComplete', States.RoundComplete, {
-    'Enter Safe Zone': 'RestPeriod',
-  });
-  fsm.addState('RestPeriod', States.RestPeriod, {
-    'Continue Driving': 'Playing',
-    'Drive to Gas Station': 'GasStation',
-  });
-  fsm.addState('GasStation', States.GasStation, {
-    'Stop at Station': 'ShopMenu',
-    'Continue Driving': 'Playing',
-  });
-  fsm.addState('ShopMenu', States.ShopMenu, Object.assign({
+  fsm.addState('ShopMenu', States.ShopMenu, {
     'Exit Shop': 'Playing',
-  }, buyTransitions));
+  });
 
   fsm.start('MainMenu');
 

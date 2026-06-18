@@ -17,7 +17,7 @@ const CONFIG = {
     drawDistance: 220,    // cuantos segmentos dibujar hacia delante
     fieldOfView: 100,     // grados
     cameraHeight: 1000,   // altura de la camara sobre la carretera
-    fogDensity: 5,        // densidad de la niebla en el horizonte
+    fogDensity: 4,        // densidad de la niebla en el horizonte
   },
 
   // --- Fisica del coche del jugador ---
@@ -35,13 +35,21 @@ const CONFIG = {
     turboRegenPerSec: 6,    // regeneracion de turbo por segundo
   },
 
-  // --- Reglas de juego (ligadas a la maquina de estados) ---
+  /* --- Reglas de juego --------------------------------------------------
+   * MEDIDAS TEORICAS DE DISTANCIA (ronda a ronda):
+   *   roundTarget = maxSpeed * gasStationSeconds = 12000 * 30 = 360 000 ud.
+   *   Escala: maxSpeed (12000 ud/s) equivale a 320 km/h => 88,9 m/s,
+   *           luego 1 ud ≈ 0,00741 m.
+   *   => Cada ronda son ~360 000 ud ≈ 2 667 m ≈ 2,67 km de conduccion.
+   *   La pista mide 1310 segmentos * 200 = 262 000 ud ≈ 1,94 km (1 vuelta),
+   *   asi que una ronda equivale a ~1,37 vueltas a la pista.
+   * -------------------------------------------------------------------- */
   rules: {
     startLives: 3,
 
-    // Llegar a la gasolinera se mide por DISTANCIA, no por tiempo.
-    // El objetivo equivale a ~N segundos a velocidad punta SIN turbo.
-    gasStationSeconds: 30,    // segundos de conduccion a tope para "llegar"
+    // Llegar a la gasolinera se mide por DISTANCIA (no por tiempo):
+    // equivale a ~N segundos a velocidad punta SIN turbo.
+    gasStationSeconds: 30,
 
     crashSpeedPenalty: 0.25,  // velocidad que conservas tras chocar
     invincibleSec: 2.8,       // invencibilidad tras revivir (frames de gracia)
@@ -58,51 +66,67 @@ const CONFIG = {
       zAhead: 1.1,            // alcance por delante (en segmentos)
       zBehind: 0.4,           // alcance por detras (en segmentos)
     },
+
+    // Gasolinera fisica al borde de la carretera (te acercas y frenas).
+    station: {
+      offset: 1.85,           // posicion lateral (>1 = fuera de la carretera, dcha)
+      signLeadDistance: 9000, // a que distancia antes aparece el cartel
+      signOffset: 1.5,        // posicion lateral del cartel
+      interactSpeed: 2200,    // velocidad max para poder interactuar (hay que frenar)
+      interactBefore: 4000,   // margen de distancia ANTES de la estacion
+      interactAfter: 16000,   // margen DESPUES (zona generosa para frenar)
+      roundBonus: 100,        // bonus de dinero por ronda al repostar
+    },
   },
 
   // --- Catalogo de mejoras de la tienda (ShopMenu) ---
+  // once:true  -> solo se puede comprar una vez.
   shop: [
-    { id: 'engine',  name: 'Mejora de Motor',     cost: 500,  desc: '+ velocidad punta' },
-    { id: 'armor',   name: 'Blindaje',            cost: 400,  desc: '+1 vida extra' },
-    { id: 'turbo',   name: 'Capacidad de Turbo',  cost: 350,  desc: '+ deposito de turbo' },
-    { id: 'turret',  name: 'Torreta Automatica',  cost: 800,  desc: 'elimina 1 coche / 15s' },
+    { id: 'engine',  name: 'Mejora de Motor',    cost: 500,   desc: '+ velocidad punta' },
+    { id: 'armor',   name: 'Blindaje',           cost: 400,   desc: '+1 vida extra' },
+    { id: 'turbo',   name: 'Capacidad de Turbo', cost: 350,   desc: '+ deposito de turbo' },
+    { id: 'turret',  name: 'Torreta Automatica', cost: 5000,  desc: 'elimina 1 coche / 15s', once: true },
   ],
 
-  // --- Aspecto de los coches (preparado para ampliar/sustituir) ---
-  // Cada "skin" describe los colores del coche dibujado por procedimiento.
-  // Para usar arte real en el futuro, asigna skin.image = <HTMLImageElement>
-  // (y opcionalmente frameW/frameH); Sprites lo dibujara en vez de los rects.
+  /* --- Aspecto de los coches (skins) -----------------------------------
+   * Cada skin referencia una imagen (src). assets.js la carga en skin.image.
+   * Sprites dibuja la imagen; si aun no ha cargado usa el color de respaldo.
+   * Para cambiar un coche: cambia su 'src' (o añade entradas a enemies[]).
+   * -------------------------------------------------------------------- */
   carSkins: {
-    // Coche del jugador
-    player: {
-      image: null, frameW: 0, frameH: 0,
-      body: '#d4342f', shadow: '#a82723', cabin: '#1a2a3a',
-      wing: '#2a2a30', wheel: '#101014',
-      lightL: '#ffcf3f', lightR: '#ff3b3b',
-    },
-    // Pool de skins para los rivales (se reparten ciclicamente)
+    player: { src: 'assets/player_delorean.png', image: null, fallback: '#d4342f' },
     enemies: [
-      { image: null, body: '#3f7fff', shadow: '#2a5ad0', cabin: '#13243a', wing: '#1c1c24', wheel: '#101014', light: '#ff5050' },
-      { image: null, body: '#ffae3f', shadow: '#d08a25', cabin: '#3a2a13', wing: '#241c1c', wheel: '#101014', light: '#ff5050' },
-      { image: null, body: '#9b3fff', shadow: '#7325d0', cabin: '#2a133a', wing: '#1c1c24', wheel: '#101014', light: '#ff5050' },
-      { image: null, body: '#3fffa0', shadow: '#25d07f', cabin: '#133a2a', wing: '#1c241c', wheel: '#101014', light: '#ff5050' },
-      { image: null, body: '#ff3f8f', shadow: '#d0256f', cabin: '#3a1326', wing: '#241c20', wheel: '#101014', light: '#ffcf3f' },
-      { image: null, body: '#cccccc', shadow: '#9a9a9a', cabin: '#222232', wing: '#1c1c24', wheel: '#101014', light: '#ff5050' },
+      { name: 'Azul',       src: 'assets/enemy_azul.png',       image: null, fallback: '#3f7fff' },
+      { name: 'Blanco',     src: 'assets/enemy_blanco.png',     image: null, fallback: '#e8e8e8' },
+      { name: 'Negro',      src: 'assets/enemy_negro.png',      image: null, fallback: '#2a2a30' },
+      { name: 'Furgon',     src: 'assets/enemy_furgon.png',     image: null, fallback: '#c8c8c8' },
+      { name: 'Ferrario',   src: 'assets/enemy_ferrario.png',   image: null, fallback: '#e02020' },
+      { name: 'Fantastico', src: 'assets/enemy_fantastico.png', image: null, fallback: '#202020' },
+      { name: 'GruasPaco',  src: 'assets/enemy_gruas.png',      image: null, fallback: '#f0a020' },
+      { name: 'Caza',       src: 'assets/enemy_caza.png',       image: null, fallback: '#d0d0d0' },
+      { name: 'EquipoA',    src: 'assets/enemy_equipoa.png',    image: null, fallback: '#404040' },
     ],
   },
 
-  // --- Paleta 16-bit ---
+  // --- Otros assets de escena (cargados en assets.js) ---
+  assets: {
+    horizon: { src: 'assets/bg_horizon.png', image: null },
+    station: { src: 'assets/gas_station.png', image: null },
+    sign:    { src: 'assets/sign_gas.png',    image: null },
+  },
+
+  // --- Paleta 16-bit (terreno mas vivo, inspirado en la referencia) ---
   colors: {
-    sky:      '#3a6ea5',
-    skyDark:  '#1c3a5e',
-    fog:      '#80a0c0',
-    grassLight: '#2e8b3d',
-    grassDark:  '#1f6b2c',
-    roadLight:  '#6b6b7b',
-    roadDark:   '#5a5a6a',
-    rumbleLight:'#e8e8f0',
-    rumbleDark: '#c83232',
-    laneMarker: '#e8e8f0',
+    sky:      '#5aa0e0',
+    skyDark:  '#2a6ec0',
+    fog:      '#9ec8e8',
+    grassLight: '#5fb83f',
+    grassDark:  '#3f9e2c',
+    roadLight:  '#5c5c66',
+    roadDark:   '#525258',
+    rumbleLight:'#f0f0f4',
+    rumbleDark: '#d83232',
+    laneMarker: '#f0f0f4',
     hud:        '#f0f0f0',
     hudShadow:  '#101018',
     accent:     '#ffd23f',

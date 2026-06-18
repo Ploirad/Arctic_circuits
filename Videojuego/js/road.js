@@ -24,7 +24,7 @@ const Road = (() => {
       p1: { world: { y: lastY(), z: n * R.segmentLength }, camera: {}, screen: {} },
       p2: { world: { y: y, z: (n + 1) * R.segmentLength }, camera: {}, screen: {} },
       curve: curve,
-      cars: [],   // rivales situados en este segmento
+      sprites: [],  // sprites (coches, gasolinera, carteles) en este segmento
       color: Math.floor(n / R.rumbleLength) % 2,  // 0/1 para alternar colores
     });
   }
@@ -127,38 +127,58 @@ const Road = (() => {
     }
   }
 
-  // Reparte los rivales en sus segmentos (se llama cada frame antes de render).
-  function placeCars(cars) {
-    for (const seg of segments) if (seg.cars.length) seg.cars.length = 0;
-    if (!cars) return;
-    for (const car of cars) findSegment(car.z).cars.push(car);
+  /* Sprites: cada uno es { z, offset, draw(ctx, x, yBottom, screenScale) }.
+   * x        = posicion horizontal en pantalla (ya con curva + offset lateral)
+   * yBottom  = base inferior del sprite en pantalla
+   * screenScale = escala de proyeccion (multiplicala por tu factor de tamaño)
+   * Asi la carretera no necesita saber si es un coche, una gasolinera, etc. */
+  function placeSprites(sprites) {
+    for (const seg of segments) if (seg.sprites.length) seg.sprites.length = 0;
+    if (!sprites) return;
+    for (const s of sprites) findSegment(s.z).sprites.push(s);
   }
 
-  // Dibuja los rivales de un segmento usando su proyeccion ya calculada.
-  function drawCarsOf(ctx, seg, width) {
-    if (!seg.cars.length) return;
-    for (const car of seg.cars) {
-      // Interpola la escala/posicion entre los dos extremos del segmento.
-      const pct = (car.z % R.segmentLength) / R.segmentLength;
+  function drawSpritesOf(ctx, seg, width) {
+    if (!seg.sprites.length) return;
+    for (const s of seg.sprites) {
+      const pct = (s.z % R.segmentLength) / R.segmentLength;
       const scale = seg.p1.screen.scale + (seg.p2.screen.scale - seg.p1.screen.scale) * pct;
       const sx = seg.p1.screen.x + (seg.p2.screen.x - seg.p1.screen.x) * pct;
       const sy = seg.p1.screen.y + (seg.p2.screen.y - seg.p1.screen.y) * pct;
-      const spriteX = sx + scale * car.offset * R.roadWidth * width / 2;
-      // Escala calibrada para que el coche ocupe ~un carril de ancho.
-      const spriteScale = scale * 1200;
-      if (spriteScale < 0.05) continue;
-      Sprites.enemyCar(ctx, spriteX, sy, spriteScale, car.skin);
+      const spriteX = sx + scale * s.offset * R.roadWidth * width / 2;
+      if (scale <= 0) continue;
+      s.draw(ctx, spriteX, sy, scale);
     }
   }
 
+  // --- Fondo de horizonte (parallax) ------------------------------------
+  // Se desplaza horizontalmente segun la curvatura proxima y el lateral
+  // del jugador, dando sensacion de profundidad sin coste de proyeccion.
+  function drawBackground(ctx, baseSegment, basePercent, playerX) {
+    const img = CONFIG.assets.horizon.image;
+    const horizonY = Math.round(CONFIG.height * 0.5);
+    if (!img || !img.complete || img.naturalWidth === 0) return;
+
+    // Estima la curvatura acumulada de los primeros segmentos.
+    let curve = 0;
+    for (let n = 0; n < 60; n++)
+      curve += segments[(baseSegment.index + n) % segments.length].curve;
+    const shift = -(curve * 4) - (playerX * 60);
+
+    const w = CONFIG.width;
+    const dh = Math.round(w * (img.naturalHeight / img.naturalWidth));
+    const top = horizonY - dh;
+    let ox = shift % w;
+    if (ox > 0) ox -= w;
+    // Tilea horizontalmente para cubrir todo el ancho con el desplazamiento.
+    for (let x = ox; x < w; x += w) ctx.drawImage(img, x, top, w, dh);
+  }
+
   /**
-   * Renderiza la carretera (y los rivales situados sobre ella).
-   * @param ctx contexto 2D
-   * @param position posicion z de la camara/jugador en la pista
-   * @param playerX desplazamiento lateral del jugador (-1..1 ~ borde de pista)
-   * @param cars lista opcional de rivales a dibujar sobre el asfalto
+   * Renderiza el cielo/horizonte, la carretera y los sprites sobre ella.
+   * @param sprites lista opcional de sprites (coches, gasolinera, carteles)
    */
-  function render(ctx, position, playerX, cars) {
+  function render(ctx, position, playerX, sprites) {
     const width = CONFIG.width;
     const height = CONFIG.height;
     const baseSegment = findSegment(position);
@@ -167,7 +187,15 @@ const Road = (() => {
       (baseSegment.p2.world.y - baseSegment.p1.world.y) * basePercent;
     const camY = playerY + R.cameraHeight;
 
-    placeCars(cars);
+    // Fondo (cielo degradado + montañas con parallax).
+    const g = ctx.createLinearGradient(0, 0, 0, height * 0.55);
+    g.addColorStop(0, CONFIG.colors.skyDark);
+    g.addColorStop(1, CONFIG.colors.sky);
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, width, height);
+    drawBackground(ctx, baseSegment, basePercent, playerX);
+
+    placeSprites(sprites);
 
     let maxY = height;       // recorte: no dibujar segmentos tapados por colinas
     let x = 0;               // acumulador de desplazamiento por curva
@@ -205,12 +233,12 @@ const Road = (() => {
       visible.push(seg);
     }
 
-    // 2) Rivales: de lejos a cerca para un solapado correcto.
-    for (let i = visible.length - 1; i >= 0; i--) drawCarsOf(ctx, visible[i], width);
+    // 2) Sprites: de lejos a cerca para un solapado correcto.
+    for (let i = visible.length - 1; i >= 0; i--) drawSpritesOf(ctx, visible[i], width);
   }
 
   return {
-    build, render, findSegment, placeCars,
+    build, render, findSegment,
     get segments() { return segments; },
     get trackLength() { return trackLength; },
     get segmentLength() { return R.segmentLength; },

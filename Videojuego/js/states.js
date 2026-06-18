@@ -30,6 +30,8 @@ const GameState = {
   upgrades: { engine: 0, armor: 0, turbo: 0, turret: false },
   turretTimer: 0,
   flicker: false,
+  station: { dist: 0 },  // distancia (acumulada) a la que esta la gasolinera
+  canShop: false,        // ¿estamos parados junto a la gasolinera?
 
   // Reinicia una partida nueva desde cero (las mejoras tambien se resetean).
   reset() {
@@ -45,16 +47,20 @@ const GameState = {
     this.turboActive = false;
     this.invincible = 0;
     this.round = 1;
-    this.startRound();
+    this.canShop = false;
     this.turretTimer = 0;
+    this.startRound();
     this.spawnEnemies();
   },
 
-  // Marca el inicio de una ronda: fija el objetivo de distancia a recorrer.
+  // Marca el inicio de una ronda: fija el objetivo de distancia y coloca la
+  // gasolinera a esa distancia por delante (te acercas conduciendo).
   startRound() {
     this.roundStartDistance = this.distance;
     // Distancia ~= velocidad punta (sin turbo) * segundos objetivo.
     this.roundTarget = CONFIG.player.maxSpeed * CONFIG.rules.gasStationSeconds;
+    this.station.dist = this.distance + this.roundTarget;
+    this.canShop = false;
   },
 
   // Progreso hacia la gasolinera de la ronda actual (0..1).
@@ -68,25 +74,30 @@ const GameState = {
     return this.turboActive ? base * CONFIG.player.turboMultiplier : base;
   },
 
+  randomSkin() {
+    const pool = CONFIG.carSkins.enemies;
+    return pool[Math.floor(Math.random() * pool.length)];
+  },
+
   spawnEnemies() {
     this.enemies = [];
-    const skins = CONFIG.carSkins.enemies;
     for (let i = 0; i < CONFIG.rules.enemyCount; i++) {
       this.enemies.push({
         z: (i + 2) * Road.segmentLength * 30,
         offset: (Math.random() * 1.6) - 0.8,
         speed: CONFIG.player.maxSpeed * (0.25 + Math.random() * 0.25),
-        skin: skins[i % skins.length],
-        alive: true,
+        skin: this.randomSkin(),
       });
     }
   },
 
-  // Reaparece un rival lejos del jugador (tras destruirlo o adelantarlo).
+  // Reaparece un rival lejos del jugador (tras destruirlo o adelantarlo),
+  // estrenando skin para dar variedad.
   respawnEnemy(car) {
     car.z = (this.position + Road.trackLength * (0.45 + Math.random() * 0.4)) % Road.trackLength;
     car.offset = (Math.random() * 1.6) - 0.8;
-    car.alive = true;
+    car.speed = CONFIG.player.maxSpeed * (0.25 + Math.random() * 0.25);
+    car.skin = this.randomSkin();
   },
 };
 
@@ -103,6 +114,17 @@ const UI = {
     ctx.fillStyle = CONFIG.colors.hudShadow;
     ctx.fillText(str, x + 1, y + 1);
     ctx.fillStyle = color || CONFIG.colors.hud;
+    ctx.fillText(str, x, y);
+    ctx.restore();
+  },
+
+  // Texto plano sin sombra (para la tienda monocromatica de fondo blanco).
+  textMono(ctx, str, x, y, size, color, align) {
+    ctx.save();
+    ctx.font = `${size}px "Courier New", monospace`;
+    ctx.textAlign = align || 'left';
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = color || '#1a1a1a';
     ctx.fillText(str, x, y);
     ctx.restore();
   },
@@ -158,22 +180,66 @@ const UI = {
 };
 
 // --------------------------------------------------------------------------
-// Render compartido de la escena de conduccion (carretera + coches)
+// Render compartido de la escena de conduccion (carretera + sprites + coche)
 // --------------------------------------------------------------------------
-function renderDrivingScene(ctx) {
-  UI.sky(ctx);
-  // La carretera dibuja tambien los rivales situados sobre el asfalto.
-  Road.render(ctx, GameState.position, GameState.playerX, GameState.enemies);
+const SCALE = {
+  carK: 82000,        // tamaño en pantalla de los rivales (px = screenScale * K)
+  stationK: 320000,   // tamaño de la gasolinera
+  signK: 120000,      // tamaño del cartel
+  playerWidth: 112,   // ancho fijo del DeLorean abajo-centro
+};
 
-  // Coche del jugador (vista trasera, fijo abajo-centro)
-  const steer = (Input.held('left') ? -1 : 0) + (Input.held('right') ? 1 : 0);
+// Construye la lista de sprites del mundo para pasarsela a Road.render.
+function buildWorldSprites() {
+  const sprites = [];
+
+  // Rivales (cada uno se dibuja con su skin)
+  for (const car of GameState.enemies) {
+    sprites.push({
+      z: car.z, offset: car.offset,
+      draw: (ctx, x, y, s) => Sprites.enemyCar(ctx, x, y, s * SCALE.carK, car.skin),
+    });
+  }
+
+  // Gasolinera y cartel: solo cuando estan dentro del campo visible (la
+  // distancia objetivo puede superar una vuelta, asi evitamos colocarla mal).
+  const ST = CONFIG.rules.station;
+  const renderAhead = Road.segmentLength * (CONFIG.road.drawDistance - 6);
+  const remaining = GameState.station.dist - GameState.distance;
+
+  if (remaining < renderAhead && remaining > -ST.interactAfter) {
+    const zStation = ((GameState.station.dist % Road.trackLength) + Road.trackLength) % Road.trackLength;
+    sprites.push({
+      z: zStation, offset: ST.offset,
+      draw: (ctx, x, y, s) => Sprites.prop(ctx, CONFIG.assets.station.image, x, y, s * SCALE.stationK),
+    });
+  }
+
+  // Cartel "SERVICIOS" un poco antes de la gasolinera.
+  const signRemaining = remaining - ST.signLeadDistance;
+  if (signRemaining < renderAhead && signRemaining > -2000) {
+    const zSign = (((GameState.station.dist - ST.signLeadDistance) % Road.trackLength) + Road.trackLength) % Road.trackLength;
+    sprites.push({
+      z: zSign, offset: ST.signOffset,
+      draw: (ctx, x, y, s) => Sprites.prop(ctx, CONFIG.assets.sign.image, x, y, s * SCALE.signK),
+    });
+  }
+
+  return sprites;
+}
+
+function renderDrivingScene(ctx) {
+  // Road dibuja cielo + horizonte (parallax) + carretera + sprites del mundo.
+  Road.render(ctx, GameState.position, GameState.playerX, buildWorldSprites());
+
+  // Coche del jugador (DeLorean, vista trasera, fijo abajo-centro)
   const cx = CONFIG.width / 2;
   const cy = CONFIG.height - 18;
-  if (GameState.turboActive) Sprites.turboFlames(ctx, cx, cy, 1, GameState.flicker);
+  if (GameState.turboActive) Sprites.turboFlames(ctx, cx, cy, SCALE.playerWidth, GameState.flicker);
 
   // Durante la invencibilidad el coche parpadea (se atenua en flancos).
   const blink = GameState.invincible > 0 && GameState.flicker;
-  Sprites.playerCar(ctx, cx, cy, 1, steer, CONFIG.carSkins.player, blink);
+  Sprites.playerCar(ctx, cx, cy, SCALE.playerWidth, blink, GameState.upgrades.turret);
 }
 
 // --------------------------------------------------------------------------
@@ -249,12 +315,12 @@ const States = {
       // --- Rivales ---
       this.updateEnemies(dt);
 
-      // --- Torreta automatica (mejora): destruye un rival cada 15s ---
+      // --- Torreta automatica (mejora): elimina un rival cada 15s ---
       if (G.upgrades.turret) {
         G.turretTimer += dt;
         if (G.turretTimer >= 15) {
           G.turretTimer = 0;
-          if (G.enemies.length) G.respawnEnemy(G.enemies[0]); // lo "elimina" y reaparece lejos
+          this.fireTurret();
         }
       }
 
@@ -263,11 +329,28 @@ const States = {
       if (G.turboActive) earn *= CONFIG.rules.turboMoneyMultiplier;
       G.money += earn;
 
-      // --- Llegada a la gasolinera por DISTANCIA -> RoundComplete ---
-      if (G.distance - G.roundStartDistance >= G.roundTarget) {
-        fsm.send('Reached Gas Station');
-        return;
+      // --- Gasolinera fisica: te acercas, FRENAS y pulsas ENTER para parar ---
+      const ST = CONFIG.rules.station;
+      const remaining = G.station.dist - G.distance;   // distancia que falta
+      G.canShop = remaining <= ST.interactBefore &&
+                  remaining >= -ST.interactAfter &&
+                  G.speed <= ST.interactSpeed;
+      if (G.canShop && Input.pressed('accept')) { fsm.send('Stop at Station'); return; }
+      // Si te la saltas sin frenar, se prepara otra mas adelante (sin bonus).
+      if (remaining < -ST.interactAfter) G.startRound();
+    },
+
+    // Elimina al rival mas cercano por delante (efecto de la torreta).
+    fireTurret() {
+      const G = GameState;
+      let best = null, bestRel = Infinity;
+      for (const car of G.enemies) {
+        let rel = car.z - G.position;
+        if (rel < -Road.trackLength / 2) rel += Road.trackLength;
+        if (rel > Road.trackLength / 2) rel -= Road.trackLength;
+        if (rel >= 0 && rel < bestRel) { bestRel = rel; best = car; }
       }
+      if (best) G.respawnEnemy(best);
     },
 
     updateEnemies(dt) {
@@ -303,6 +386,18 @@ const States = {
     render(ctx) {
       renderDrivingScene(ctx);
       UI.hud(ctx);
+
+      // Aviso de gasolinera: frena para poder repostar/comprar.
+      const ST = CONFIG.rules.station;
+      const remaining = GameState.station.dist - GameState.distance;
+      if (GameState.canShop) {
+        UI.text(ctx, '> PULSA ENTER PARA REPOSTAR Y COMPRAR <',
+          CONFIG.width / 2, CONFIG.height - 44,
+          11, GameState.flicker ? CONFIG.colors.accent : '#fff', 'center');
+      } else if (remaining <= ST.interactBefore && remaining > -ST.interactAfter) {
+        UI.text(ctx, 'GASOLINERA — ¡FRENA!', CONFIG.width / 2, CONFIG.height - 44,
+          11, '#ffd23f', 'center');
+      }
     },
   },
 
@@ -351,72 +446,29 @@ const States = {
     },
   },
 
-  // ---- RoundComplete ----
-  RoundComplete: {
-    enter() { GameState.speed *= 0.5; Input.flush(); },
-    update() { if (Input.pressed('accept')) fsm.send('Enter Safe Zone'); },
-    render(ctx) {
-      renderDrivingScene(ctx);
-      UI.panel(ctx, 70, 80, CONFIG.width - 140, 110);
-      UI.text(ctx, '¡RONDA COMPLETADA!', CONFIG.width / 2, 100, 20, CONFIG.colors.accent, 'center');
-      UI.text(ctx, `Bonus: $${GameState.round * 100}`, CONFIG.width / 2, 132, 12, '#7bff8f', 'center');
-      UI.text(ctx, 'ENTER: Entrar a Zona Segura', CONFIG.width / 2, 158, 11, '#9aa0c0', 'center');
-    },
-  },
-
-  // ---- RestPeriod (zona de descanso) ----
-  RestPeriod: {
+  // ---- ShopMenu (tienda de la gasolinera) ----
+  // Se entra al parar junto a la gasolinera ("Stop at Station"). Aqui se
+  // cobra el bonus de ronda y se prepara la siguiente. Fondo monocromo blanco.
+  ShopMenu: {
     enter() {
-      GameState.money += GameState.round * 100; // bonus de ronda
+      GameState.money += CONFIG.rules.station.roundBonus * GameState.round; // bonus de ronda
       GameState.round += 1;
-      GameState.startRound();                   // nuevo objetivo de distancia
+      GameState.startRound();   // nueva gasolinera por delante
+      GameState.speed = 0;      // has parado a repostar
       Input.flush();
     },
+    // ¿El objeto ya esta comprado? (mejoras de compra unica)
+    owned(item) {
+      return item.once && item.id === 'turret' && GameState.upgrades.turret;
+    },
     update() {
-      if (Input.pressed('accept')) fsm.send('Continue Driving');
-      if (Input.held('down') || Input.pressed('opt1')) fsm.send('Drive to Gas Station');
-    },
-    render(ctx) {
-      UI.sky(ctx);
-      Road.render(ctx, GameState.position, 0);
-      UI.panel(ctx, 60, 70, CONFIG.width - 120, 130);
-      UI.text(ctx, 'ZONA DE DESCANSO', CONFIG.width / 2, 86, 18, CONFIG.colors.accent, 'center');
-      UI.text(ctx, 'ENTER: Seguir conduciendo', CONFIG.width / 2, 124, 12, '#7bff8f', 'center');
-      UI.text(ctx, 'ABAJO: Ir a la Gasolinera', CONFIG.width / 2, 146, 12, CONFIG.colors.hud, 'center');
-    },
-  },
-
-  // ---- GasStation ----
-  GasStation: {
-    enter() { Input.flush(); },
-    update() {
-      if (Input.pressed('accept')) fsm.send('Stop at Station');
-      if (Input.held('up') || Input.pressed('back')) fsm.send('Continue Driving');
-    },
-    render(ctx) {
-      UI.sky(ctx);
-      ctx.fillStyle = '#2a2a3a';
-      ctx.fillRect(0, CONFIG.height * 0.6, CONFIG.width, CONFIG.height * 0.4);
-      UI.panel(ctx, 60, 60, CONFIG.width - 120, 150);
-      UI.text(ctx, '⛽ GASOLINERA', CONFIG.width / 2, 80, 20, CONFIG.colors.accent, 'center');
-      UI.text(ctx, `Dinero: $${Math.floor(GameState.money)}`, CONFIG.width / 2, 112, 12, '#7bff8f', 'center');
-      UI.text(ctx, 'ENTER: Parar en la Tienda', CONFIG.width / 2, 140, 12, CONFIG.colors.hud, 'center');
-      UI.text(ctx, 'ARRIBA: Seguir conduciendo', CONFIG.width / 2, 162, 11, '#9aa0c0', 'center');
-    },
-  },
-
-  // ---- ShopMenu (tienda de mejoras) ----
-  ShopMenu: {
-    enter() { Input.flush(); },
-    update() {
-      // Compras: "Buy X" -> vuelve a GasStation (segun diagrama)
       const buy = (idx) => {
         const item = CONFIG.shop[idx];
-        if (GameState.money >= item.cost) {
-          GameState.money -= item.cost;
-          this.applyUpgrade(item.id);
-          fsm.send('Buy ' + item.name);  // -> GasStation
-        }
+        if (!item || this.owned(item)) return;          // no recomprar items unicos
+        if (GameState.money < item.cost) return;        // sin dinero suficiente
+        GameState.money -= item.cost;
+        this.applyUpgrade(item.id);
+        // Comprar NO sale de la tienda: puedes seguir comprando.
       };
       if (Input.pressed('opt1')) buy(0);
       else if (Input.pressed('opt2')) buy(1);
@@ -429,24 +481,32 @@ const States = {
       if (id === 'engine') G.upgrades.engine += 1;
       else if (id === 'armor') { G.upgrades.armor += 1; G.lives += 1; }
       else if (id === 'turbo') { G.upgrades.turbo += 1; G.maxTurbo += 50; G.turbo = G.maxTurbo; }
-      else if (id === 'turret') G.upgrades.turret = true;
+      else if (id === 'turret') { G.upgrades.turret = true; G.turretTimer = 0; }
     },
     render(ctx) {
-      UI.sky(ctx);
-      UI.panel(ctx, 30, 24, CONFIG.width - 60, CONFIG.height - 48);
-      UI.text(ctx, 'TIENDA', CONFIG.width / 2, 34, 20, CONFIG.colors.accent, 'center');
-      UI.text(ctx, `Dinero: $${Math.floor(GameState.money)}`, CONFIG.width / 2, 58, 11, '#7bff8f', 'center');
+      const W = CONFIG.width, H = CONFIG.height;
+      // Fondo monocromatico y blanco.
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, W, 4); ctx.fillRect(0, H - 4, W, 4); // marco
+
+      const ink = '#1a1a1a', soft = '#777777', off = '#bdbdbd';
+      UI.textMono(ctx, 'TIENDA — ESPAÑOIL', W / 2, 16, 18, ink, 'center');
+      UI.textMono(ctx, `DINERO  $${Math.floor(GameState.money)}`, W / 2, 40, 12, ink, 'center');
+      ctx.fillStyle = '#000'; ctx.fillRect(40, 60, W - 80, 1);
 
       CONFIG.shop.forEach((item, i) => {
-        const y = 84 + i * 32;
-        const afford = GameState.money >= item.cost;
-        UI.text(ctx, `[${i + 1}] ${item.name}`, 50, y, 13, afford ? CONFIG.colors.hud : '#666');
-        UI.text(ctx, `$${item.cost}`, CONFIG.width - 50, y, 13, afford ? '#7bff8f' : '#aa5555', 'right');
-        UI.text(ctx, item.desc, 60, y + 14, 9, '#9aa0c0');
+        const y = 78 + i * 36;
+        const owned = this.owned(item);
+        const afford = GameState.money >= item.cost && !owned;
+        const c = owned ? off : (afford ? ink : soft);
+        UI.textMono(ctx, `[${i + 1}] ${item.name}`, 48, y, 13, c);
+        const right = owned ? 'COMPRADO' : `$${item.cost}`;
+        UI.textMono(ctx, right, W - 48, y, 13, c, 'right');
+        UI.textMono(ctx, item.desc, 60, y + 15, 9, soft);
       });
 
-      UI.text(ctx, 'ENTER: Salir de la tienda (volver a conducir)',
-        CONFIG.width / 2, CONFIG.height - 34, 10, CONFIG.colors.accent, 'center');
+      UI.textMono(ctx, 'ENTER: salir y seguir conduciendo', W / 2, H - 26, 10, ink, 'center');
     },
   },
 };

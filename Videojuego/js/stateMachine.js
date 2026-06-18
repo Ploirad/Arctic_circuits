@@ -3,17 +3,16 @@
  * Cada estado es un objeto { enter, update, render, exit }.
  * Las transiciones se declaran por nombre y se disparan con send(evento).
  *
- * Mapea 1:1 con el diagrama del juego:
+ * Flujo implementado (la gasolinera del diagrama es ahora un objeto fisico
+ * al borde de la carretera: te acercas, frenas y "Stop at Station" abre la
+ * tienda; eso unifica RoundComplete/RestPeriod/GasStation):
  *   MainMenu --Start Game--> Playing
  *   Playing  --Collision Detected--> Crashed
  *   Crashed  --Lives > 0--> Playing   |  --Lives = 0--> GameOver
  *   GameOver --Game Over--> MainMenu
  *   Playing  --Pause--> MainMenu
- *   Playing  --120 Seconds No Cars--> RoundComplete
- *   RoundComplete --Enter Safe Zone--> RestPeriod
- *   RestPeriod --Drive to Gas Station--> GasStation | --Continue Driving--> Playing
- *   GasStation --Stop at Station--> ShopMenu
- *   ShopMenu --Buy X--> GasStation   |  --Exit Shop--> Playing
+ *   Playing  --Stop at Station--> ShopMenu   (frenas junto a la gasolinera)
+ *   ShopMenu --Exit Shop--> Playing
  * ====================================================================== */
 
 class StateMachine {
