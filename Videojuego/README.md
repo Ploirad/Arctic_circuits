@@ -29,16 +29,42 @@ Abre [index.html](index.html) en cualquier navegador moderno (doble clic). No ne
 Cada nodo del diagrama es un estado real en [js/stateMachine.js](js/stateMachine.js) + [js/states.js](js/states.js):
 
 ```
-MainMenu ──Start Game──> Playing
-Playing  ──Collision Detected──> Crashed
-Crashed  ──Lives > 0──> Playing      Crashed ──Lives = 0──> GameOver
-GameOver ──Game Over──> MainMenu
-Playing  ──Pause──> MainMenu
-Playing  ──120 Seconds No Cars──> RoundComplete
-RoundComplete ──Enter Safe Zone──> RestPeriod
-RestPeriod ──Drive to Gas Station──> GasStation   RestPeriod ──Continue Driving──> Playing
-GasStation ──Stop at Station──> ShopMenu          GasStation ──Continue Driving──> Playing
-ShopMenu ──Buy X──> GasStation                    ShopMenu ──Exit Shop──> Playing
+---
+config:
+  layout: elk
+  theme: redux
+---
+stateDiagram-v2
+    [*] --> MainMenu
+    
+    MainMenu --> Playing: Start Game
+    
+    Playing --> Playing: Move Lane
+    Playing --> Playing: Dodge Car
+    Playing --> Playing: Use Turbo
+    Playing --> Playing: Earn Money
+    Playing --> Crashed: Collision Detected
+    Playing --> RoundComplete: 120 Seconds No Cars
+    
+    Crashed --> GameOver: Lives = 0
+    Crashed --> Playing: Lives > 0
+    
+    RoundComplete --> RestPeriod: Enter Safe Zone
+    
+    RestPeriod --> GasStation: Drive to Gas Station
+    RestPeriod --> Playing: Continue Driving
+    
+    GasStation --> ShopMenu: Stop at Station
+    
+    ShopMenu --> GasStation: Buy Engine Upgrade
+    ShopMenu --> GasStation: Buy Armor
+    ShopMenu --> GasStation: Buy Turbo Capacity
+    ShopMenu --> GasStation: Buy Auto-Turret (Eliminates a car every 15s)
+    ShopMenu --> Playing: Exit Shop
+    
+    GameOver --> MainMenu: Game Over
+    
+    Playing --> MainMenu: Pause
 ```
 
 Acciones internas de `Playing` (auto-bucles del diagrama): *Use Turbo, Dodge Car, Move Lane, Earn Money* están implementadas dentro del propio estado.
