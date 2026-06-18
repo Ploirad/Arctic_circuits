@@ -13,6 +13,7 @@ El mecanismo de las bellotas consistiría en toda la zona delantera del robot. E
 ### Termómetro:
     
 El mecanismo del termómetro se realizará con una pieza en forma de U tal que la medida entre las dos rectas paralelas se situen a más de lo que mide el propio termometro (100 mm) para poder sujetarlo y desplazarlo lateralmente en ambas direcciones. A su vez esta pieza sera desplegada y retraída mediante un servomotor 9g de 180 para sujetar o no el termometro, se usarán 90 de los 180 grados de libertad del servo, dejando la pieza paralela a la pared cuando esté replegado y perpendicular a la misma cuando se encuentre desplegado. En conclusión, se hará uso de un volumen total al espacio que ocuparía el servomotor puesto que el resto del sistema se puede no tener que modificar el robot principal para que quede totalmente oculto el sistema.
+        
         Piezas necesarias:
         - Servomotor 9g de 180º.
         - Sujector (Pieza posteriormente dibujada).
@@ -36,5 +37,9 @@ En la recolección y colocación de bellotas las imégenes que representan el pr
 ![Bellota](Bellotas/SistemaAgarrePiezas.png)
 ![Bellota](Bellotas/SistemaSepararPiezas.png)
 
-    - Recoger cajas de avellanas: 
+    - Recoger cajas de avellanas (Versión kiko): 
         La forma del chasis es más secundaria, aquí solo voy a describir mi forma de levantar, transportar, rotar, ... etc las cajas de avellanas.
+
+![Ventosa](Sistema_ventosas.png)
+
+    En este sistema se levanta por separado a cada caja, dependiendo los colores de las cajas se levantan solo algunas, de maneras que se rotara para que tengan las correctas mirando para arriba, se sube con ventosas y con unas poleas siguiendo un carril
